@@ -2,5 +2,4 @@ eclipse.preferences.version=1
 encoding//productinfo/items.py=utf-8
 encoding//productinfo/pipelines.py=utf-8
 encoding//productinfo/settings.py=utf-8
-encoding//productinfo/spiders/info.py=utf-8
 encoding//productinfo/spiders/product_spider.py=utf-8
