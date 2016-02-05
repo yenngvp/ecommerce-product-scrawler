@@ -28,32 +28,25 @@ class ProxyMiddleware(object):
 
     def process_request(self, request, spider):
         
-        request.meta['proxy'] = settings.get('HTTP_PROXY')
-        max_requests_per_ip = settings.get('MAX_REQUESTS_PER_IP')
-        
-        # checks if number of requests made has reached MAX_REQUESTS_PER_IP
-        # change to new IP to avoid getting banned
-        num_requests = self.request_counter.value()
-        self.request_counter.increment()
-        print 'Requests Counter: ' + str(num_requests)
-        
-        if self.is_first_request or num_requests >= max_requests_per_ip:
-            self.is_first_request = False
-            print 'Request with new TOR identity'
-            def _set_urlproxy():
-                proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8123"})
-                opener = urllib2.build_opener(proxy_support)
-                urllib2.install_opener(opener)
+        if settings.get('HTTP_PROXY_ENABLED'):
+            request.meta['proxy'] = settings.get('HTTP_PROXY')
+            max_requests_per_ip = settings.get('MAX_REQUESTS_PER_IP')
             
-            # renew the connection
-            self.renew_connection()
+            # checks if number of requests made has reached MAX_REQUESTS_PER_IP
+            # change to new IP to avoid getting banned
+            num_requests = self.request_counter.value()
+            self.request_counter.increment()
+            print 'Requests Counter: ' + str(num_requests)
             
-            # set the proxy
-            #_set_urlproxy()
+            if self.is_first_request or num_requests >= max_requests_per_ip:
+                self.is_first_request = False
+                print 'Request with new TOR identity'
             
-            request = urllib2.Request(request.url, None, request.headers)
-            
-            response = urllib2.urlopen(request)
-            
-            print 'Response status: ' + str(response.status)
+                # renew the connection
+                self.renew_connection()
+    
+        else:
+            # Direct prox
+            pass
                 
+                     

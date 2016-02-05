@@ -68,7 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'productinfo.pipelines.productinfoPipeline': 300,
+    'productinfo.pipelines.ProductinfoPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -115,8 +115,8 @@ USER_AGENT_LIST = [
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
 ]
 
+HTTP_PROXY_ENABLED = False
 HTTP_PROXY = 'http://127.0.0.1:8123'
-
 MAX_REQUESTS_PER_IP = 99
 
 DOWNLOAD_TIMEOUT = 5
