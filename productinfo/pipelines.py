@@ -12,71 +12,38 @@ class ProductinfoPipeline(object):
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
-        if item['type'] == 'company':
-            return self.process_company_item(item)
+        if item['type'] == 'product':
+            return self.process_product_item(item)
         elif item['type'] == 'category':
             return self.process_category_item(item)
-        elif item['type'] == 'company_category':
-            return self.process_company_category_item(item)
-        elif item['type'] == 'url':
+        elif item['type'] == 'product_category':
+            return self.process_product_category_item(item)
+        elif item['type'] == 'url_failure':
             return self.process_url_item(item)
         else:
             return item
 
-    def process_company_item(self, item):
-        try:
-
-            sql = 'INSERT INTO tmp_company('
-            sql += 'name_vn,'
-            sql += 'name_en,'
-            sql += 'tax_code,'
-            sql += 'address_head,'
-            sql += 'address_branch1,'
-            sql += 'address_branch2,'
-            sql += 'address_branch3,'
-            sql += 'tax_registered_date,'
-            sql += 'tax_registered_addr,'
-            sql += 'start_date,'
-            sql += 'close_date,'
-            sql += 'represent_director,'
-            sql += 'email,'
-            sql += 'cell_phone,'
-            sql += 'home_phone,'
-            sql += 'category_id,'
-            sql += 'exchange_code,'
-            sql += 'geo_location,'
-            sql += 'business_license,'
-            sql += 'primary_business)'
-            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-            sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
-
-            print sql
-            self.cursor.execute(sql,
-                            (
-                            item['name_vn'],
-                            item['name_en'],
-                            item['tax_code'],
-                            item['address_head'],
-                            item['address_branch1'],
-                            item['address_branch2'],
-                            item['address_branch3'],
-                            item['tax_registered_date'],
-                            item['tax_registered_addr'],
-                            item['start_date'],
-                            item['close_date'],
-                            item['represent_director'],
-                            item['email'],
-                            item['cell_phone'],
-                            item['home_phone'],
-                            item['category_id'],
-                            item['exchange_code'],
-                            item['geo_location'],
-                            item['business_license'],
-                            item['primary_business']))
-            self.conn.commit()
-
-        except MySQLdb.Error, e:
-            print "Error insert company: %d: %s" % (e.args[0], e.args[1])
+    def process_product_item(self, item):
+#         try:
+# 
+#             sql = 'INSERT INTO tmp_product('
+#             sql += 'name_vn,'
+#             sql += 'business_license,'
+#             sql += 'primary_business)'
+#             sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+#             sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
+# 
+#             print sql
+#             self.cursor.execute(sql,
+#                             (
+#                             item['name_vn'],
+#                             item['name_en'],
+#                             item['business_license'],
+#                             item['primary_business']))
+#             self.conn.commit()
+# 
+#         except MySQLdb.Error, e:
+#             print "Error insert product: %d: %s" % (e.args[0], e.args[1])
 
         return item
 
@@ -102,10 +69,10 @@ class ProductinfoPipeline(object):
 
         return item
 
-    def process_company_category_item(self, item):
+    def process_product_category_item(self, item):
         try:
 
-            sql = 'INSERT INTO tmp_company_category('
+            sql = 'INSERT INTO tmp_product_category('
             sql += 'tax_code,'
             sql += 'category_id,'
             sql += 'major)'
@@ -122,7 +89,7 @@ class ProductinfoPipeline(object):
             self.conn.commit()
 
         except MySQLdb.Error, e:
-            print "Error insert company_category: %d: %s" % (e.args[0], e.args[1])
+            print "Error insert product_category: %d: %s" % (e.args[0], e.args[1])
 
         return item
 

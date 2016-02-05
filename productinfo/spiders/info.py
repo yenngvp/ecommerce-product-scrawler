@@ -2,10 +2,10 @@
 import scrapy
 import re
 from bs4 import BeautifulSoup
-from companyinfo.items import ProductinfoItem
-from companyinfo.items import BusinessCategoryItem
-from companyinfo.items import CompanyCategoryItem
-from companyinfo.items import UrlItem
+from productinfo.items import ProductinfoItem
+from productinfo.items import BusinessCategoryItem
+from productinfo.items import CompanyCategoryItem
+from productinfo.items import UrlItem
 
 
 class InfoSpider(scrapy.Spider):
