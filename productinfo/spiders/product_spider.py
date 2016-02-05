@@ -33,7 +33,7 @@ class ProductSpider(SitemapSpider):
         pass
 
     def parse(self, response):
-        
+        print response
         pass
     
     def parse_product(self, response):
