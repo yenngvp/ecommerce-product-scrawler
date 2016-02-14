@@ -29,19 +29,24 @@ class ProductinfoPipeline(object):
         try:
 
             sql = 'INSERT INTO tmp_product('
-            sql += 'name_vn,'
-            sql += 'business_license,'
-            sql += 'primary_business)'
-            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+            sql += 'name,'
+            sql += 'price,'
+            sql += 'summary,'
+            sql += 'description,'
+            sql += 'spec,'
+            sql += 'image_url)'
+            sql += ' VALUES (%s,%s,%s,%s,%s,%s)'
             sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
 
             print sql
             self.cursor.execute(sql,
                             (
-                            item['name_vn'],
-                            item['name_en'],
-                            item['business_license'],
-                            item['primary_business']))
+                            item['name'],
+                            item['price'],
+                            item['summary'],
+                            item['description'],
+                            item['spec'],
+                            item['image_url']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
@@ -98,21 +103,19 @@ class ProductinfoPipeline(object):
     def process_url_item(self, item):
         try:
 
-            sql = 'INSERT INTO url('
+            sql = 'INSERT INTO url_failure('
             sql += 'url,'
             sql += 'ref_url,'
-            sql += 'start_page,'
-            sql += 'num_pages)'
-            sql += ' VALUES (%s,%s,%d,%d)'
-            sql += ' ON DUPLICATE KEY UPDATE crawled=crawled+1'
+            sql += 'status)'
+            sql += ' VALUES (%s,%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE retry=retry+1'
 
             print sql
             self.cursor.execute(sql,
                                 (
                                     item['url'],
                                     item['ref_url'],
-                                    item['start_page'],
-                                    item['num_pages']))
+                                    item['status']))
             self.conn.commit()
 
         except MySQLdb.Error, e:

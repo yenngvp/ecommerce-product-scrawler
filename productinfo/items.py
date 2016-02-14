@@ -17,6 +17,7 @@ class ProductItem(scrapy.Item):
     spec = scrapy.Field()
     summary = scrapy.Field()
     description = scrapy.Field()
+    image_url = scrapy.Field()
     
     pass
 
@@ -85,9 +86,8 @@ class UrlFailureItem(scrapy.Item):
     type = scrapy.Field()
     url = scrapy.Field()
     ref_url = scrapy.Field()
-    crawled = scrapy.Field()
-    start_page = scrapy.Field()
-    num_pages = scrapy.Field()
+    status = scrapy.Field()
+    retry = scrapy.Field()
 
     pass
 
