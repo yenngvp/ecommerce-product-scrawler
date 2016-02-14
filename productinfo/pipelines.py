@@ -6,9 +6,11 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import MySQLdb
 
+
 class ProductinfoPipeline(object):
     def __init__(self):
-        self.conn = MySQLdb.connect(user='root', passwd='88footbDb#836', db='productinfo', host='127.0.0.1', port=3306, charset="utf8", use_unicode=True)
+        self.conn = MySQLdb.connect(user='root', passwd='88footbDb#836', db='productinfo', host='127.0.0.1', port=3306,
+                                    charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
@@ -24,26 +26,26 @@ class ProductinfoPipeline(object):
             return item
 
     def process_product_item(self, item):
-#         try:
-# 
-#             sql = 'INSERT INTO tmp_product('
-#             sql += 'name_vn,'
-#             sql += 'business_license,'
-#             sql += 'primary_business)'
-#             sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-#             sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
-# 
-#             print sql
-#             self.cursor.execute(sql,
-#                             (
-#                             item['name_vn'],
-#                             item['name_en'],
-#                             item['business_license'],
-#                             item['primary_business']))
-#             self.conn.commit()
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert product: %d: %s" % (e.args[0], e.args[1])
+        try:
+
+            sql = 'INSERT INTO tmp_product('
+            sql += 'name_vn,'
+            sql += 'business_license,'
+            sql += 'primary_business)'
+            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
+
+            print sql
+            self.cursor.execute(sql,
+                            (
+                            item['name_vn'],
+                            item['name_en'],
+                            item['business_license'],
+                            item['primary_business']))
+            self.conn.commit()
+
+        except MySQLdb.Error, e:
+            print "Error insert product: %d: %s" % (e.args[0], e.args[1])
 
         return item
 
@@ -58,10 +60,10 @@ class ProductinfoPipeline(object):
 
             print sql
             self.cursor.execute(sql,
-                            (
-                            item['code'],
-                            item['name'],
-                            item['name']))
+                                (
+                                    item['code'],
+                                    item['name'],
+                                    item['name']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
@@ -81,11 +83,11 @@ class ProductinfoPipeline(object):
 
             print sql
             self.cursor.execute(sql,
-                            (
-                            item['tax_code'],
-                            item['category_id'],
-                            item['major'],
-                            item['major']))
+                                (
+                                    item['tax_code'],
+                                    item['category_id'],
+                                    item['major'],
+                                    item['major']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
@@ -106,15 +108,14 @@ class ProductinfoPipeline(object):
 
             print sql
             self.cursor.execute(sql,
-                            (
-                            item['url'],
-                            item['ref_url'],
-                            item['start_page'],
-                            item['num_pages']))
+                                (
+                                    item['url'],
+                                    item['ref_url'],
+                                    item['start_page'],
+                                    item['num_pages']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
             print "Error insert url: %d: %s" % (e.args[0], e.args[1])
 
         return item
-
