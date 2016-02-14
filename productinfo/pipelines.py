@@ -156,7 +156,7 @@ class ProductinfoPipeline(object):
             sql = 'INSERT INTO tmp_product_supplier('
             sql += 'product_id,'
             sql += 'supplier_id)'
-            sql += ' SELECT p.id, c.id FROM tmp_product p, tmp_supplier s WHERE p.name=%s AND s.name=%s'
+            sql += ' SELECT p.id, s.id FROM tmp_product p, tmp_supplier s WHERE p.name=%s AND s.name=%s'
 
             print sql
             self.cursor.execute(sql,

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.9, for osx10.9 (x86_64)
 --
 -- Host: localhost    Database: productinfo
 -- ------------------------------------------------------
--- Server version	5.6.27
+-- Server version	5.7.10
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -37,15 +37,6 @@ CREATE TABLE `branch` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `branch`
---
-
-LOCK TABLES `branch` WRITE;
-/*!40000 ALTER TABLE `branch` DISABLE KEYS */;
-/*!40000 ALTER TABLE `branch` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `category`
 --
 
@@ -54,22 +45,14 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `code` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `level` smallint(2) DEFAULT NULL,
+  `url` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `category`
---
-
-LOCK TABLES `category` WRITE;
-/*!40000 ALTER TABLE `category` DISABLE KEYS */;
-/*!40000 ALTER TABLE `category` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `product`
@@ -84,21 +67,15 @@ CREATE TABLE `product` (
   `sku` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `price` decimal(10,0) DEFAULT NULL,
   `last_price` decimal(10,0) DEFAULT NULL,
-  `spec` text COLLATE utf8_unicode_ci,
   `summary` text COLLATE utf8_unicode_ci,
   `description` text COLLATE utf8_unicode_ci,
+  `spec` text CHARACTER SET utf8,
+  `image_url` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `duplicate` int(11) DEFAULT '0',
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `product`
---
-
-LOCK TABLES `product` WRITE;
-/*!40000 ALTER TABLE `product` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `product_branch`
@@ -120,15 +97,6 @@ CREATE TABLE `product_branch` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product_branch`
---
-
-LOCK TABLES `product_branch` WRITE;
-/*!40000 ALTER TABLE `product_branch` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product_branch` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `product_category`
 --
 
@@ -148,15 +116,6 @@ CREATE TABLE `product_category` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product_category`
---
-
-LOCK TABLES `product_category` WRITE;
-/*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `product_supplier`
 --
 
@@ -174,15 +133,6 @@ CREATE TABLE `product_supplier` (
   CONSTRAINT `fk_supplier1` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `product_supplier`
---
-
-LOCK TABLES `product_supplier` WRITE;
-/*!40000 ALTER TABLE `product_supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product_supplier` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `supplier`
@@ -205,15 +155,6 @@ CREATE TABLE `supplier` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `supplier`
---
-
-LOCK TABLES `supplier` WRITE;
-/*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tmp_branch`
 --
 
@@ -234,15 +175,6 @@ CREATE TABLE `tmp_branch` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tmp_branch`
---
-
-LOCK TABLES `tmp_branch` WRITE;
-/*!40000 ALTER TABLE `tmp_branch` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_branch` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tmp_category`
 --
 
@@ -250,22 +182,17 @@ DROP TABLE IF EXISTS `tmp_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_category` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   `code` text COLLATE utf8_unicode_ci,
-  `name` text COLLATE utf8_unicode_ci,
   `parent_id` int(11) DEFAULT NULL,
-  `level` smallint(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `parent_name` text CHARACTER SET utf8,
+  `level` smallint(2) DEFAULT NULL,
+  `url` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=257 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tmp_category`
---
-
-LOCK TABLES `tmp_category` WRITE;
-/*!40000 ALTER TABLE `tmp_category` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_category` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tmp_product`
@@ -275,25 +202,20 @@ DROP TABLE IF EXISTS `tmp_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_product` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `name` text COLLATE utf8_unicode_ci,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text CHARACTER SET utf8,
   `sku` text COLLATE utf8_unicode_ci,
-  `price` decimal(10,3) DEFAULT NULL,
-  `last_price` decimal(10,3) DEFAULT NULL,
-  `spec` text COLLATE utf8_unicode_ci,
+  `price` decimal(20,3) DEFAULT NULL,
+  `last_price` decimal(20,3) DEFAULT NULL,
   `summary` text COLLATE utf8_unicode_ci,
-  `description` text COLLATE utf8_unicode_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `description` text COLLATE utf8_unicode_ci,
+  `spec` text CHARACTER SET utf8,
+  `image_url` text CHARACTER SET utf8,
+  `duplicate` int(11) DEFAULT '0',
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=772 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tmp_product`
---
-
-LOCK TABLES `tmp_product` WRITE;
-/*!40000 ALTER TABLE `tmp_product` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_product` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tmp_product_branch`
@@ -310,15 +232,6 @@ CREATE TABLE `tmp_product_branch` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tmp_product_branch`
---
-
-LOCK TABLES `tmp_product_branch` WRITE;
-/*!40000 ALTER TABLE `tmp_product_branch` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_product_branch` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tmp_product_category`
 --
 
@@ -326,20 +239,12 @@ DROP TABLE IF EXISTS `tmp_product_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_product_category` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `category_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tmp_product_category`
---
-
-LOCK TABLES `tmp_product_category` WRITE;
-/*!40000 ALTER TABLE `tmp_product_category` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_product_category` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tmp_product_supplier`
@@ -349,20 +254,12 @@ DROP TABLE IF EXISTS `tmp_product_supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_product_supplier` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) DEFAULT NULL,
-  `supplier_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `supplier_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tmp_product_supplier`
---
-
-LOCK TABLES `tmp_product_supplier` WRITE;
-/*!40000 ALTER TABLE `tmp_product_supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_product_supplier` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tmp_supplier`
@@ -372,25 +269,19 @@ DROP TABLE IF EXISTS `tmp_supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_supplier` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `name` text COLLATE utf8_unicode_ci,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
   `code` text COLLATE utf8_unicode_ci,
   `website` text COLLATE utf8_unicode_ci,
   `email` text COLLATE utf8_unicode_ci,
   `hotline` text COLLATE utf8_unicode_ci,
   `phone` text COLLATE utf8_unicode_ci,
-  `address` text COLLATE utf8_unicode_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `address` text COLLATE utf8_unicode_ci,
+  `url` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tmp_supplier`
---
-
-LOCK TABLES `tmp_supplier` WRITE;
-/*!40000 ALTER TABLE `tmp_supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tmp_supplier` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `url_failure`
@@ -401,21 +292,14 @@ DROP TABLE IF EXISTS `url_failure`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `url_failure` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` text COLLATE utf8_unicode_ci,
-  `status` char(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `retry` smallint(2) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `url` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  `ref_url` text COLLATE utf8_unicode_ci,
+  `status` int(3) DEFAULT NULL,
+  `retry` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url_UNIQUE` (`url`)
+) ENGINE=InnoDB AUTO_INCREMENT=6486 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `url_failure`
---
-
-LOCK TABLES `url_failure` WRITE;
-/*!40000 ALTER TABLE `url_failure` DISABLE KEYS */;
-/*!40000 ALTER TABLE `url_failure` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -426,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-05 14:02:20
+-- Dump completed on 2016-02-14 21:55:37

@@ -47,10 +47,9 @@ class ProductSpider(SitemapSpider):
 
         #  ***** Parse product category *****
         cat_li = get_val(response, self.xpath_category, False, False)
-        print 'XPATH1 ==== '+ self.xpath_category['xpath']
         cat_li_xpath = response.xpath(self.xpath_category['xpath'])
         cat_levels = len(cat_li)
-        print 'LEVEL ==== '+ str(cat_levels)
+
         if cat_levels < 2:
             product_cat_name = 'UNKNOWN'
         else:
@@ -58,9 +57,6 @@ class ProductSpider(SitemapSpider):
             for i in range(1, cat_levels):
                 path_name = '..//li[' + str(i) + ']/span/a/text()'
                 path_link = '..//li[' + str(i) + ']/span/a/@href'
-
-                print 'path_name: ' + path_name
-                print 'path_link: ' + path_link
 
                 cat_name = cat_li_xpath.xpath(path_name).extract_first().strip().encode('utf-8')
                 cat_url = cat_li_xpath.xpath(path_link).extract_first().strip()
@@ -86,7 +82,8 @@ class ProductSpider(SitemapSpider):
         item['name'] = get_val(response, self.xpath_name)
         product_name = item['name']
         # Price
-        item['price'] = get_val(response, self.xpath_price)
+        str_price = get_val(response, self.xpath_price)
+        item['price'] = re.sub(r'[.]', '', str_price)
         # Summary
         summary_arr = get_val(response, self.xpath_summary, False, False)
         item['summary'] = ''.join(summary_arr)
@@ -115,11 +112,14 @@ class ProductSpider(SitemapSpider):
         item = SupplierItem()
         item['type'] = 'supplier'
         try:
-            item['name'] = self.xpath_supplier.xpath('..//text()').extract_first().strip().encode('utf-8')
-            item['url'] = self.xpath_supplier.xpath('..//@href').extract_first().strip()
+            path = response.xpath(self.xpath_supplier['xpath'])
+            item['name'] = path.xpath('..//text()').extract()[1].strip().encode('utf-8')
+            item['url'] = path.xpath('..//@href').extract_first().strip()
+
         except Exception as e:
             try:
-                item['name'] = self.xpath_supplier_nolink.xpath('..//text()').extract_first().strip().encode('utf-8')
+                path = response.xpath(self.xpath_supplier_nolink['xpath'])
+                item['name'] = path.xpath('..//text()').extract_first().strip().encode('utf-8')
                 item['url'] = ''
             except Exception as e:
                 item['name'] = 'UNKNOWN'
@@ -214,7 +214,7 @@ def xpath_product_image_url():
 
 
 def xpath_product_sku():
-    return {'css': None, 'xpath': './/*[@id="pdtsku"]'}
+    return {'css': None, 'xpath': './/*[@id="pdtsku"]/text()'}
 
 
 def xpath_product_category():
