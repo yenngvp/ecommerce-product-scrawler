@@ -46,10 +46,11 @@ class ProductSpider(SitemapSpider):
             return
 
         #  ***** Parse product category *****
-        cat_li = get_val(response, self.xpath_category)
+        cat_li = get_val(response, self.xpath_category, False, False)
+        print 'XPATH1 ==== '+ self.xpath_category['xpath']
         cat_li_xpath = response.xpath(self.xpath_category['xpath'])
         cat_levels = len(cat_li)
-
+        print 'LEVEL ==== '+ str(cat_levels)
         if cat_levels < 2:
             product_cat_name = 'UNKNOWN'
         else:
@@ -57,6 +58,10 @@ class ProductSpider(SitemapSpider):
             for i in range(1, cat_levels):
                 path_name = '..//li[' + str(i) + ']/span/a/text()'
                 path_link = '..//li[' + str(i) + ']/span/a/@href'
+
+                print 'path_name: ' + path_name
+                print 'path_link: ' + path_link
+
                 cat_name = cat_li_xpath.xpath(path_name).extract_first().strip().encode('utf-8')
                 cat_url = cat_li_xpath.xpath(path_link).extract_first().strip()
 
@@ -110,16 +115,16 @@ class ProductSpider(SitemapSpider):
         item = SupplierItem()
         item['type'] = 'supplier'
         try:
-            item['supplier_name'] = self.xpath_supplier.xpath('..//text()').extract_first().strip().encode('utf-8')
-            item['supplier_url'] = self.xpath_supplier.xpath('..//@href').extract_first().strip()
+            item['name'] = self.xpath_supplier.xpath('..//text()').extract_first().strip().encode('utf-8')
+            item['url'] = self.xpath_supplier.xpath('..//@href').extract_first().strip()
         except Exception as e:
             try:
-                item['supplier_name'] = self.xpath_supplier_nolink.xpath('..//text()').extract_first().strip().encode('utf-8')
-                item['supplier_url'] = ''
+                item['name'] = self.xpath_supplier_nolink.xpath('..//text()').extract_first().strip().encode('utf-8')
+                item['url'] = ''
             except Exception as e:
-                item['supplier_name'] = 'UNKNOWN'
-                item['supplier_url'] = ''
-        supplier_name = item['supplier_name']
+                item['name'] = 'UNKNOWN'
+                item['url'] = ''
+        supplier_name = item['name']
         yield item
 
         #  ***** Create Product Supplier *****
