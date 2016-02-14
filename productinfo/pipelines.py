@@ -20,6 +20,10 @@ class ProductinfoPipeline(object):
             return self.process_category_item(item)
         elif item['type'] == 'product_category':
             return self.process_product_category_item(item)
+        elif item['type'] == 'supplier':
+            return self.process_supplier_item(item)
+        elif item['type'] == 'product_supplier':
+            return self.process_product_supplier_item(item)
         elif item['type'] == 'url_failure':
             return self.process_url_item(item)
         else:
@@ -30,18 +34,20 @@ class ProductinfoPipeline(object):
 
             sql = 'INSERT INTO tmp_product('
             sql += 'name,'
+            sql += 'sku,'
             sql += 'price,'
             sql += 'summary,'
             sql += 'description,'
             sql += 'spec,'
             sql += 'image_url)'
-            sql += ' VALUES (%s,%s,%s,%s,%s,%s)'
+            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s)'
             sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
 
             print sql
             self.cursor.execute(sql,
                             (
                             item['name'],
+                            item['sku'],
                             item['price'],
                             item['summary'],
                             item['description'],
@@ -58,17 +64,21 @@ class ProductinfoPipeline(object):
         try:
 
             sql = 'INSERT INTO tmp_category('
-            sql += 'code,'
-            sql += 'name)'
-            sql += ' VALUES (%s,%s)'
-            sql += ' ON DUPLICATE KEY UPDATE name=%s'
+            sql += 'name,'
+            sql += 'parent_name,'
+            sql += 'level,'
+            sql += 'url)'
+            sql += ' VALUES (%s,%s,%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE url=%s'
 
             print sql
             self.cursor.execute(sql,
                                 (
-                                    item['code'],
                                     item['name'],
-                                    item['name']))
+                                    item['parent_name'],
+                                    item['level'],
+                                    item['url'],
+                                    item['url']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
@@ -80,19 +90,15 @@ class ProductinfoPipeline(object):
         try:
 
             sql = 'INSERT INTO tmp_product_category('
-            sql += 'tax_code,'
-            sql += 'category_id,'
-            sql += 'major)'
-            sql += ' VALUES (%s,%s,%s)'
-            sql += ' ON DUPLICATE KEY UPDATE major=%s'
+            sql += 'product_id,'
+            sql += 'category_id)'
+            sql += ' SELECT p.id, c.id FROM tmp_product p, tmp_category c WHERE p.name=%s AND c.name=%s'
 
             print sql
             self.cursor.execute(sql,
                                 (
-                                    item['tax_code'],
-                                    item['category_id'],
-                                    item['major'],
-                                    item['major']))
+                                    item['product_name'],
+                                    item['category_name']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
@@ -120,5 +126,46 @@ class ProductinfoPipeline(object):
 
         except MySQLdb.Error, e:
             print "Error insert url: %d: %s" % (e.args[0], e.args[1])
+
+        return item
+
+    def process_supplier_item(self, item):
+        try:
+
+            sql = 'INSERT INTO tmp_supplier('
+            sql += 'name,'
+            sql += 'url)'
+            sql += ' VALUES (%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE url=url'
+
+            print sql
+            self.cursor.execute(sql,
+                                (
+                                    item['name'],
+                                    item['url']))
+            self.conn.commit()
+
+        except MySQLdb.Error, e:
+            print "Error insert supplier: %d: %s" % (e.args[0], e.args[1])
+
+        return item
+
+    def process_product_supplier_item(self, item):
+        try:
+
+            sql = 'INSERT INTO tmp_product_supplier('
+            sql += 'product_id,'
+            sql += 'supplier_id)'
+            sql += ' SELECT p.id, c.id FROM tmp_product p, tmp_supplier s WHERE p.name=%s AND s.name=%s'
+
+            print sql
+            self.cursor.execute(sql,
+                                (
+                                    item['product_name'],
+                                    item['supplier_name']))
+            self.conn.commit()
+
+        except MySQLdb.Error, e:
+            print "Error insert product_supplier: %d: %s" % (e.args[0], e.args[1])
 
         return item

@@ -28,14 +28,15 @@ class CategoryItem(scrapy.Item):
     name = scrapy.Field()
     parent_name = scrapy.Field()
     level = scrapy.Field()
+    url = scrapy.Field()
 
     pass
 
 
 class ProductCategoryItem(scrapy.Item):
     type = scrapy.Field()
-    product_id = scrapy.Field()
-    category_id = scrapy.Field()
+    product_name = scrapy.Field()
+    category_name = scrapy.Field()
 
     pass
 
@@ -70,14 +71,15 @@ class SupplierItem(scrapy.Item):
     phone = scrapy.Field()
     hotline = scrapy.Field()
     address = scrapy.Field()
+    url = scrapy.Field()
     
     pass
 
 
 class ProductSupplierItem(scrapy.Item):
     type = scrapy.Field()
-    product_id = scrapy.Field()
-    supplier_id = scrapy.Field()
+    product_name = scrapy.Field()
+    supplier_name = scrapy.Field()
     
     pass
 

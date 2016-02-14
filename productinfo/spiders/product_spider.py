@@ -2,7 +2,7 @@
 import scrapy
 import re
 import logging
-from scrapy.spiders import SitemapSpider
+from scrapy.spiders import SitemapSpider, Spider
 from productinfo.items import *
 
 
@@ -24,12 +24,18 @@ class ProductSpider(SitemapSpider):
         self.xpath_spec = xpath_product_spec()
         self.xpath_description = xpath_product_description()
         self.xpath_image_url = xpath_product_image_url()
+        self.xpath_sku = xpath_product_sku()
+        self.xpath_category = xpath_product_category()
+        self.xpath_supplier = xpath_product_supplier()
+        self.xpath_supplier_nolink = xpath_product_supplier_nolink()
 
         self.re_noscript = re.compile('<\/*noscript>')
 
     def parse(self, response):
         ref_url = response.request.headers.get('Referer', None)
         logging.info('===========Parse product %s from referer url: %s', response.url, ref_url)
+
+        # ***** Handle failed request *****
         if response.status != 200:
             item = UrlFailureItem()
             item['type'] = 'url_failure'
@@ -39,10 +45,41 @@ class ProductSpider(SitemapSpider):
             yield item
             return
 
+        #  ***** Parse product category *****
+        cat_li = get_val(response, self.xpath_category)
+        cat_li_xpath = response.xpath(self.xpath_category['xpath'])
+        cat_levels = len(cat_li)
+
+        if cat_levels < 2:
+            product_cat_name = 'UNKNOWN'
+        else:
+            prev_cat_name = ''
+            for i in range(1, cat_levels):
+                path_name = '..//li[' + str(i) + ']/span/a/text()'
+                path_link = '..//li[' + str(i) + ']/span/a/@href'
+                cat_name = cat_li_xpath.xpath(path_name).extract_first().strip().encode('utf-8')
+                cat_url = cat_li_xpath.xpath(path_link).extract_first().strip()
+
+                # Create a new category item
+                item = CategoryItem()
+                item['type'] = 'category'
+                item['name'] = cat_name
+                item['url'] = cat_url
+                item['level'] = i
+                item['parent_name'] = prev_cat_name
+                prev_cat_name = cat_name
+                yield item
+
+                if i == cat_levels - 1:
+                    # Direct product's category
+                    product_cat_name = cat_name
+
+        #  ***** Parse product *****
         item = ProductItem()
         item['type'] = 'product'
         # Name
         item['name'] = get_val(response, self.xpath_name)
+        product_name = item['name']
         # Price
         item['price'] = get_val(response, self.xpath_price)
         # Summary
@@ -58,6 +95,38 @@ class ProductSpider(SitemapSpider):
         # Image Url
         item['image_url'] = get_val(response, self.xpath_image_url, True, False)
 
+        # SKU
+        item['sku'] = get_val(response, self.xpath_sku, True, False)
+        yield item
+
+        #  ***** Create ProductCategory item *****
+        item = ProductCategoryItem()
+        item['type'] = 'product_category'
+        item['product_name'] = product_name
+        item['category_name'] = product_cat_name
+        yield item
+
+        #  ***** Parse Supplier *****
+        item = SupplierItem()
+        item['type'] = 'supplier'
+        try:
+            item['supplier_name'] = self.xpath_supplier.xpath('..//text()').extract_first().strip().encode('utf-8')
+            item['supplier_url'] = self.xpath_supplier.xpath('..//@href').extract_first().strip()
+        except Exception as e:
+            try:
+                item['supplier_name'] = self.xpath_supplier_nolink.xpath('..//text()').extract_first().strip().encode('utf-8')
+                item['supplier_url'] = ''
+            except Exception as e:
+                item['supplier_name'] = 'UNKNOWN'
+                item['supplier_url'] = ''
+        supplier_name = item['supplier_name']
+        yield item
+
+        #  ***** Create Product Supplier *****
+        item = ProductSupplierItem()
+        item['type'] = 'product_supplier'
+        item['product_name'] = product_name
+        item['supplier_name'] = supplier_name
         yield item
 
 
@@ -139,6 +208,22 @@ def xpath_product_image_url():
     return {'css': None, 'xpath': './/div/div[1]/div/div[1]/div[2]/div[3]/span/span/@data-sprite'}
 
 
+def xpath_product_sku():
+    return {'css': None, 'xpath': './/*[@id="pdtsku"]'}
+
+
+def xpath_product_category():
+    return {'css': None, 'xpath': '/html/body/div[1]/div[2]/div[2]/div/div[2]/div[1]/ul/li'}
+
+
+def xpath_product_supplier():
+    return {'css': None, 'xpath': './/*[@id="prod_content_wrapper"]/div[2]/div[2]/div/div/div[1]/a'}
+
+
+def xpath_product_supplier_nolink():
+    return {'css': None, 'xpath': './/*[@id="prod_content_wrapper"]/div[2]/div[2]/div/div/div'}
+
+
 def get_allowed_domain():
     return ['lazada.vn']
 
@@ -153,4 +238,3 @@ def get_sitemap_rules():
 
 def get_sitemap_follows():
     return ['sitemap-products.xml']
-
