@@ -274,4 +274,4 @@ def get_sitemap_rules():
 
 
 def get_sitemap_follows():
-    return ['sitemap-products-2.xml']
+    return ['sitemap-products-3.xml', 'sitemap-products-4.xml', 'sitemap-products-5.xml']
