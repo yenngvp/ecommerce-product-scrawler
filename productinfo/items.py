@@ -18,7 +18,14 @@ class ProductItem(scrapy.Item):
     summary = scrapy.Field()
     description = scrapy.Field()
     image_url = scrapy.Field()
-    
+    url = scrapy.Field()
+    #Link
+    source = scrapy.Field()
+    url = scrapy.Field()
+    create_at = scrapy.Field()
+    update_at = scrapy.Field()
+    changefreq = scrapy.Field()
+
     pass
 
 

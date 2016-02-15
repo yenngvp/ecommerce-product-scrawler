@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+import datetime
+import time
 import logging
+from urlparse import urljoin
 from scrapy.spiders import SitemapSpider, Spider
 from productinfo.items import *
+
 
 
 class ProductSpider(SitemapSpider):
@@ -20,6 +24,7 @@ class ProductSpider(SitemapSpider):
 
         self.xpath_name = xpath_product_name()
         self.xpath_price = xpath_product_price()
+        self.xpath_last_price = xpath_product_last_price()
         self.xpath_summary = xpath_product_summary()
         self.xpath_spec = xpath_product_spec()
         self.xpath_description = xpath_product_description()
@@ -36,6 +41,15 @@ class ProductSpider(SitemapSpider):
         logging.info('===========Parse product %s from referer url: %s', response.url, ref_url)
 
         # ***** Handle failed request *****
+        if response.status == 301:
+            # Retry another
+            location = response.headers['location']
+            if re.search(self.allowed_domains[0], location) is None:
+                location = urljoin('http://www.' + self.allowed_domains[0], location)
+            logging.warn('== Received 301 response. Retrying new request with: %s', location)
+            yield scrapy.Request(location, callback=self.parse)
+            return
+
         if response.status != 200:
             item = UrlFailureItem()
             item['type'] = 'url_failure'
@@ -83,7 +97,14 @@ class ProductSpider(SitemapSpider):
         product_name = item['name']
         # Price
         str_price = get_val(response, self.xpath_price)
-        item['price'] = re.sub(r'[.]', '', str_price)
+        item['price'] = re.sub(r'\D', '', str_price)
+        # Last Price
+        str_price = get_val(response, self.xpath_last_price)
+        if str_price is not None:
+            item['last_price'] = re.sub(r'\D', '', str_price).strip()
+        else:
+            item['last_price'] = ''
+
         # Summary
         summary_arr = get_val(response, self.xpath_summary, False, False)
         item['summary'] = ''.join(summary_arr)
@@ -99,6 +120,13 @@ class ProductSpider(SitemapSpider):
 
         # SKU
         item['sku'] = get_val(response, self.xpath_sku, True, False)
+        # URL
+        item['url'] = response.url
+        item['source'] = self.allowed_domains[0]
+        ts = time.time()
+        item['update_at'] = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        item['changefreq'] = 'Always'
+
         yield item
 
         #  ***** Create ProductCategory item *****
@@ -197,6 +225,10 @@ def xpath_product_price():
     return {'css': None, 'xpath': '//span[@id="special_price_box"]/text()'}
 
 
+def xpath_product_last_price():
+    return {'css': None, 'xpath': './/*[@id="price_box"]/text()'}
+
+
 def xpath_product_summary():
     return {'css': '.prod_details', 'xpath': './ul/li'}
 
@@ -238,8 +270,8 @@ def get_sitemap_urls():
 
 
 def get_sitemap_rules():
-    return [('sitemap-products', 'parse')]
+    return [('sitemap-products-2', 'parse')]
 
 
 def get_sitemap_follows():
-    return ['sitemap-products.xml']
+    return ['sitemap-products-2.xml']

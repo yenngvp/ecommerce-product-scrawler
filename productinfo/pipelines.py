@@ -31,17 +31,20 @@ class ProductinfoPipeline(object):
 
     def process_product_item(self, item):
         try:
-
+            # Insert product item
             sql = 'INSERT INTO tmp_product('
             sql += 'name,'
             sql += 'sku,'
             sql += 'price,'
+            sql += 'last_price,'
             sql += 'summary,'
             sql += 'description,'
             sql += 'spec,'
-            sql += 'image_url)'
-            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s)'
-            sql += ' ON DUPLICATE KEY UPDATE duplicate=duplicate+1'
+            sql += 'image_url,'
+            sql += 'url)'
+            sql += ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE name=%s,sku=%s,price=%s,last_price=%s,'
+            sql += ' summary=%s,description=%s,spec=%s,image_url=%s,duplicate=duplicate+1'
 
             print sql
             self.cursor.execute(sql,
@@ -49,10 +52,42 @@ class ProductinfoPipeline(object):
                             item['name'],
                             item['sku'],
                             item['price'],
+                            item['last_price'],
+                            item['summary'],
+                            item['description'],
+                            item['spec'],
+                            item['image_url'],
+                            item['url'],
+                            item['name'],
+                            item['sku'],
+                            item['price'],
+                            item['last_price'],
                             item['summary'],
                             item['description'],
                             item['spec'],
                             item['image_url']))
+            # Insert product link
+            sql = 'INSERT INTO tmp_product_link('
+            sql += 'id,'
+            sql += 'source,'
+            sql += 'url,'
+            sql += 'update_at,'
+            sql += 'changefreq)'
+            sql += ' VALUES (%s,%s,%s,%s,%s)'
+            sql += ' ON DUPLICATE KEY UPDATE source=%s,url=%s,update_at=%s,changefreq=%s'
+
+            print sql
+            self.cursor.execute(sql,
+                            (
+                            self.cursor.lastrowid,
+                            item['source'],
+                            item['url'],
+                            item['update_at'],
+                            item['changefreq'],
+                            item['source'],
+                            item['url'],
+                            item['update_at'],
+                            item['changefreq']))
             self.conn.commit()
 
         except MySQLdb.Error, e:
