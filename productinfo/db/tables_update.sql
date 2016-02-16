@@ -14,3 +14,22 @@ CREATE TABLE `tmp_product_link` (
   `changefreq` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+-- Create table domain
+CREATE TABLE `domain` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sitemap_robot` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `update_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `xpath_name` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_price` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_last_price` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_summary` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_description` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_spec` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_sku` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `xpath_image_url` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
