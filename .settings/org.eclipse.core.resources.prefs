@@ -1,4 +1,10 @@
 eclipse.preferences.version=1
+encoding//frontier/__init__.py=utf-8
+encoding//frontier/single.py=utf-8
+encoding//frontier/spider_settings.py=utf-8
+encoding//frontier/strategy0.py=utf-8
+encoding//frontier/strategy1.py=utf-8
+encoding//frontier/worker_settings.py=utf-8
 encoding//productinfo/comm/database.py=utf-8
 encoding//productinfo/comm/domain_database.py=utf-8
 encoding//productinfo/items.py=utf-8

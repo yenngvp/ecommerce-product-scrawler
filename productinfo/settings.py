@@ -8,6 +8,7 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+from scrapy.settings.default_settings import SPIDER_MIDDLEWARES, DOWNLOADER_MIDDLEWARES
 
 BOT_NAME = 'productcrawler'
 
@@ -49,15 +50,26 @@ COOKIES_ENABLED=False
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'productinfo.middlewares.MyCustomDownloaderMiddleware': 543,
-#}
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 300,
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware' : None,
+    'scrapy.spidermiddleware.depth.DepthMiddleware': None,
+    'scrapy.spidermiddleware.offsite.OffsiteMiddleware': None,
+    'scrapy.spidermiddleware.referer.RefererMiddleware': None,
+    'scrapy.spidermiddleware.urllength.UrlLengthMiddleware': None,
     'productinfo.comm.rotate_useragent.RandomUserAgentMiddleware' :400,
-    'productinfo.comm.rotate_useragent.ProxyMiddleware' :400
+    'productinfo.comm.rotate_useragent.ProxyMiddleware' :400,
+    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerSpiderMiddleware': 1000,
 }
+
+DOWNLOADER_MIDDLEWARES.update({
+    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerDownloaderMiddleware': 1000,
+})
+
+SCHEDULER = 'frontera.contrib.scrapy.schedulers.frontier.FronteraScheduler'
+SPIDER_MIDDLEWARES.update({
+    'frontera.contrib.scrapy.middlewares.seeds.file.FileSeedLoader': 1,
+})
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -122,3 +134,25 @@ MAX_REQUESTS_PER_IP = 99
 DOWNLOAD_TIMEOUT = 15
 
 HTTPERROR_ALLOW_ALL = True
+
+DOWNLOAD_MAXSIZE = 1*1024*1024
+
+LOG_LEVEL = 'INFO'
+
+REACTOR_THREADPOOL_MAXSIZE = 32
+DNS_TIMEOUT = 180
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
