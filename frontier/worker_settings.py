@@ -8,7 +8,7 @@ SPIDER_LOG_PARTITIONS = 1
 #--------------------------------------------------------
 # Url storage
 #--------------------------------------------------------
-BACKEND = 'distributed_frontera.contrib.backends.hbase.HBaseBackend'
+BACKEND = 'frontera.contrib.backends.hbase.HBaseBackend'
 HBASE_DROP_ALL_TABLES = False
 HBASE_THRIFT_PORT = 9090
 HBASE_THRIFT_HOST = 'localhost'
@@ -31,17 +31,17 @@ MIDDLEWARES.extend([
 # MESSAGE_BUS setting
 #--------------------------------------------------------
 MESSAGE_BUS = 'frontera.contrib.messagebus.kafkabus.MessageBus'
-KAFKA_LOCATION = 'bongdatoinay.com:2181'
+KAFKA_LOCATION = 'localhost'
 FRONTIER_GROUP = 'general'
 INCOMING_TOPIC = 'frontier-done'
 OUTGOING_TOPIC = 'frontier-todo'
-#SCORING_TOPIC = ''
+SCORING_TOPIC = 'frontier-score'
 
 #--------------------------------------------------------
 # Logging
 #--------------------------------------------------------
-LOGGING_EVENTS_ENABLED = False
+LOGGING_EVENTS_ENABLED = True
 LOGGING_MANAGER_ENABLED = True
 LOGGING_BACKEND_ENABLED = True
-LOGGING_DEBUGGING_ENABLED = False
+LOGGING_DEBUGGING_ENABLED = True
 
