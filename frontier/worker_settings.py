@@ -9,9 +9,12 @@ SPIDER_LOG_PARTITIONS = 1
 # Url storage
 #--------------------------------------------------------
 BACKEND = 'frontera.contrib.backends.hbase.HBaseBackend'
-HBASE_DROP_ALL_TABLES = False
+HBASE_DROP_ALL_TABLES = True
 HBASE_THRIFT_PORT = 9090
 HBASE_THRIFT_HOST = 'localhost'
+HBASE_NAMESPACE = 'default'
+HBASE_USE_SNAPPY = True
+
 
 MIDDLEWARES.extend([
     'frontera.contrib.middlewares.domain.DomainMiddleware',
