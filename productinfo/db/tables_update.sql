@@ -17,9 +17,11 @@ CREATE TABLE `tmp_product_link` (
 
 
 -- Create table domain
+DROP TABLE IF EXISTS `domain`;
 CREATE TABLE `domain` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `sitemap_robot` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `update_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
