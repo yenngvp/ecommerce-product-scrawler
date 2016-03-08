@@ -3,12 +3,15 @@
 >>>>>>>=f6c3200 Read domains metadata from database for crawling
 eclipse.preferences.version=1
 <<<<<<< dev-to-release0_1
+<<<<<<< dev-to-release0_1
 encoding//frontier/__init__.py=utf-8
 encoding//frontier/single.py=utf-8
 encoding//frontier/spider_settings.py=utf-8
 encoding//frontier/strategy0.py=utf-8
 encoding//frontier/strategy1.py=utf-8
 encoding//frontier/worker_settings.py=utf-8
+=======
+>>>>>>> f6c3200 Read domains metadata from database for crawling
 =======
 >>>>>>> f6c3200 Read domains metadata from database for crawling
 encoding//productinfo/items.py=utf-8
