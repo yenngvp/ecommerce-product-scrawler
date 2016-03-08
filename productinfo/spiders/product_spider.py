@@ -7,7 +7,6 @@ import logging
 from urlparse import urljoin
 from scrapy.spiders import SitemapSpider, Spider
 from productinfo.items import *
-from productinfo.comm.domain_database import DomainDatabase
 
 
 
@@ -16,45 +15,31 @@ class ProductSpider(SitemapSpider):
     name = 'product'
 
     def __init__(self, *a, **kw):
-        
-        self.domains = DomainDatabase()
-        self.domains.get_domain_attibutes()
-        
-        # Iterate over domains dictionary and set attributes to the spider
-        for k, v in enumerate(self.domains):    
-            self.allowed_domains.append(k)
-            self.sitemap_urls.append(v.sitemap_urls) 
-            self.sitemap_follow.append(v.sitemap_follow)
-            self.sitemap_rules.append(v.sitemap_rules)
+        self.allowed_domains = get_allowed_domain()
+        self.sitemap_urls = get_sitemap_urls()
+        # self.sitemap_rules = get_sitemap_rules()
+        self.sitemap_follow = get_sitemap_follows()
 
         super(ProductSpider, self).__init__(*a, **kw)
 
-        self.re_noscript = re.compile('<\/*noscript>')
-        
-        # Lazada specific
+        self.xpath_name = xpath_product_name()
+        self.xpath_price = xpath_product_price()
+        self.xpath_last_price = xpath_product_last_price()
+        self.xpath_summary = xpath_product_summary()
+        self.xpath_spec = xpath_product_spec()
+        self.xpath_description = xpath_product_description()
+        self.xpath_image_url = xpath_product_image_url()
+        self.xpath_sku = xpath_product_sku()
+        self.xpath_category = xpath_product_category()
+        self.xpath_supplier = xpath_product_supplier()
         self.xpath_supplier_nolink = xpath_product_supplier_nolink()
+
+        self.re_noscript = re.compile('<\/*noscript>')
 
     def parse(self, response):
         ref_url = response.request.headers.get('Referer', None)
         logging.info('===========Parse product %s from referer url: %s', response.url, ref_url)
-        
-        # ***** Select xpath corresponding with domain url
-        for k, v in enumerate(self.domains):
-            url = 'http://www.' + k
-            if re.match(k, response.url):
-                xpath_name = v.xpath_name
-                xpath_price = v.xpath_price
-                xpath_last_price = v.xpath_last_price
-                xpath_summary = v.xpath_summary
-                xpath_spec = v.xpath_spec
-                xpath_description = v.xpath_description
-                xpath_image_url = v.xpath_image_url
-                xpath_sku = v.xpath_sku
-                xpath_category = v.xpath_category
-                xpath_supplier = v.xpath_supplier
-                
-                break
-        
+
         # ***** Handle failed request *****
         if response.status == 301:
             # Retry another
@@ -75,8 +60,8 @@ class ProductSpider(SitemapSpider):
             return
 
         #  ***** Parse product category *****
-        cat_li = get_val(response,xpath_category, False, False)
-        cat_li_xpath = response.xpath(xpath_category['xpath'])
+        cat_li = get_val(response, self.xpath_category, False, False)
+        cat_li_xpath = response.xpath(self.xpath_category['xpath'])
         cat_levels = len(cat_li)
 
         if cat_levels < 2:
@@ -108,33 +93,33 @@ class ProductSpider(SitemapSpider):
         item = ProductItem()
         item['type'] = 'product'
         # Name
-        item['name'] = get_val(response,xpath_name)
+        item['name'] = get_val(response, self.xpath_name)
         product_name = item['name']
         # Price
-        str_price = get_val(response,xpath_price)
+        str_price = get_val(response, self.xpath_price)
         item['price'] = re.sub(r'\D', '', str_price)
         # Last Price
-        str_price = get_val(response,xpath_last_price)
+        str_price = get_val(response, self.xpath_last_price)
         if str_price is not None:
             item['last_price'] = re.sub(r'\D', '', str_price).strip()
         else:
             item['last_price'] = ''
 
         # Summary
-        summary_arr = get_val(response,xpath_summary, False, False)
+        summary_arr = get_val(response, self.xpath_summary, False, False)
         item['summary'] = ''.join(summary_arr)
 
         # Description
-        desc = get_val(response,xpath_description)
+        desc = get_val(response, self.xpath_description)
         item['description'] = re.sub(self.re_noscript, '', desc)
 
         # Spec
-        item['spec'] = get_val(response,xpath_spec)
+        item['spec'] = get_val(response, self.xpath_spec)
         # Image Url
-        item['image_url'] = get_val(response,xpath_image_url, True, False)
+        item['image_url'] = get_val(response, self.xpath_image_url, True, False)
 
         # SKU
-        item['sku'] = get_val(response,xpath_sku, True, False)
+        item['sku'] = get_val(response, self.xpath_sku, True, False)
         # URL
         item['url'] = response.url
         item['source'] = self.allowed_domains[0]
@@ -155,7 +140,7 @@ class ProductSpider(SitemapSpider):
         item = SupplierItem()
         item['type'] = 'supplier'
         try:
-            path = response.xpath(xpath_supplier['xpath'])
+            path = response.xpath(self.xpath_supplier['xpath'])
             item['name'] = path.xpath('..//text()').extract()[1].strip().encode('utf-8')
             item['url'] = path.xpath('..//@href').extract_first().strip()
 
