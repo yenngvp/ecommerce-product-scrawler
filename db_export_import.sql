@@ -7,5 +7,5 @@ C:\mysql\bin\mysql.exe  -u root -p88footbDb#836 productinfo < D:\workspace\produ
 
 ==================== PRODUCTZ - SERVER/MACOSX EXPORT/IMPORT ================
 mysqldump  -u root -p88footbDb#836 productinfo  --result-file=~/git-projects/productz/productinfo/db/productinfo.sql
-mysqldump  -u root -p88footbDb#836 productinfo  --result-file=/root/git-projects/productz/productinfo/db/productinfo.sql
+
 mysql -u root -p88footbDb#836 productinfo < ~/git-projects/productz/productinfo/db/productinfo.sql

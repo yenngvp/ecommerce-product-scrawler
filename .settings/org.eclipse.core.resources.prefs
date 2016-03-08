@@ -2,6 +2,11 @@
 <<<<<<<=dev-to-release0_1
 >>>>>>>=f6c3200 Read domains metadata from database for crawling
 eclipse.preferences.version=1
+<<<<<<< HEAD
+=======
+encoding//productinfo/comm/database.py=utf-8
+encoding//productinfo/comm/domain_database.py=utf-8
+>>>>>>> parent of 7fb7f0f... Add Frontera support
 encoding//productinfo/items.py=utf-8
 encoding//productinfo/pipelines.py=utf-8
 encoding//productinfo/settings.py=utf-8
