@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0847d26f-8989-48da-a9ae-17e98e4ed022" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/productinfo/comm/connection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/productinfo/comm/spider_metadata.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/productinfo/spiders/product_frontier_spider.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tasks.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/comm/database.py" afterPath="$PROJECT_DIR$/productinfo/comm/database.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/comm/domain_database.py" afterPath="$PROJECT_DIR$/productinfo/comm/domain_database.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/db/tables_update.sql" afterPath="$PROJECT_DIR$/productinfo/db/tables_update.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/items.py" afterPath="$PROJECT_DIR$/productinfo/items.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/pipelines.py" afterPath="$PROJECT_DIR$/productinfo/pipelines.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/settings.py" afterPath="$PROJECT_DIR$/productinfo/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/spiders/product_spider.py" afterPath="$PROJECT_DIR$/productinfo/spiders/product_spider.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/backends.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/middlewares.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/single.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/spider0.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/spider1.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/spider_settings.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/strategy0.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/strategy1.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/frontier/worker_settings.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="productz.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,8 +36,8 @@
       <file leaf-file-name="pipelines.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/productinfo/pipelines.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.73461">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.2983725">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -160,20 +160,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="frontier" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="productz" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="productz" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value=".settings" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -189,6 +175,22 @@
     <property name="ToolWindowFind.ShowToolbar" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="132" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="134" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="137" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="932" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="132" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="134" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="137" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="932" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -418,7 +420,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938075" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938075" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23451911" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23451911" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938075" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -815,8 +817,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/productinfo/pipelines.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.73461">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.2983725">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
