@@ -2,7 +2,6 @@
 
 import MySQLdb as mdb
 
-
 class Database(object):
     
     def __init__(self):
