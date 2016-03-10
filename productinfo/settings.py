@@ -20,15 +20,15 @@ NEWSPIDER_MODULE = 'productinfo.spiders'
 # USER_AGENT = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS=500
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY=0.5
+DOWNLOAD_DELAY=1
 # The download delay setting will honor only one of:
-# CONCURRENT_REQUESTS_PER_DOMAIN=1
-# CONCURRENT_REQUESTS_PER_IP=1
+CONCURRENT_REQUESTS_PER_DOMAIN=32
+CONCURRENT_REQUESTS_PER_IP=32
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED=False
@@ -142,17 +142,6 @@ LOG_LEVEL = 'INFO'
 REACTOR_THREADPOOL_MAXSIZE = 32
 DNS_TIMEOUT = 180
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+# Broad crawl
+AJAXCRAWL_ENABLED = True
+LOG_LEVEL = 'DEBUG'

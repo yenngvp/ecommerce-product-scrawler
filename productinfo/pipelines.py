@@ -9,7 +9,8 @@ import MySQLdb
 
 class ProductinfoPipeline(object):
     def __init__(self):
-        self.conn = MySQLdb.connect(user='root', passwd='88footbDb#836', db='productinfo', host='bongdatoinay.com', port=3306,
+
+        self.conn = MySQLdb.connect(user='root', passwd='88footbDb#836', db='productinfo', host='103.232.121.204', port=3306,
                                     charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
 

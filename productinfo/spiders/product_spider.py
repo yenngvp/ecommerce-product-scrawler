@@ -14,18 +14,35 @@ from productinfo.comm.domain_database import DomainDatabase
 class ProductSpider(SitemapSpider):
     
     name = 'product'
-
+    
+    allowed_domains = []
+    sitemap_urls = []
+    sitemap_follow = []
+    sitemap_rules = []
+    
+    num_pages_crawled = 0
+    
     def __init__(self, *a, **kw):
         
-        self.domains = DomainDatabase()
-        self.domains.get_domain_attibutes()
+        self.domainsToCrawl = DomainDatabase()
+        self.domainsToCrawl.get_domain_attibutes()
         
-        # Iterate over domains dictionary and set attributes to the spider
-        for k, v in enumerate(self.domains):    
+        # Iterate over domainsToCrawl dictionary and set attributes to the spider
+        for k, v in self.domainsToCrawl.attributes.iteritems():
+            print k, v
             self.allowed_domains.append(k)
-            self.sitemap_urls.append(v.sitemap_urls) 
-            self.sitemap_follow.append(v.sitemap_follow)
-            self.sitemap_rules.append(v.sitemap_rules)
+            for url in v.sitemap_urls:
+                self.sitemap_urls.append(url) 
+            for url in v.sitemap_follow:
+                self.sitemap_follow.append(url)
+            for url in v.sitemap_rules:
+                self.sitemap_rules.append(url)
+        
+        # remove duplicates
+        self.sitemap_urls = list(set(self.sitemap_urls))
+        self.sitemap_follow = list(set(self.sitemap_follow))
+        self.sitemap_rules = list(set(self.sitemap_rules))
+        print self.allowed_domains, self.sitemap_urls, self.sitemap_follow, self.sitemap_rules
 
         super(ProductSpider, self).__init__(*a, **kw)
 
@@ -36,12 +53,16 @@ class ProductSpider(SitemapSpider):
 
     def parse(self, response):
         ref_url = response.request.headers.get('Referer', None)
-        logging.info('===========Parse product %s from referer url: %s', response.url, ref_url)
+        
+        logging.debug('===========Parse product %s from referer url: %s', response.url, ref_url)
+        self.num_pages_crawled += 1
+        if self.num_pages_crawled % 100 == 0:
+            logging.info('+++++++++++ Spider %s crawled %s pages', self.name, str(self.num_pages_crawled))
         
         # ***** Select xpath corresponding with domain url
-        for k, v in enumerate(self.domains):
-            url = 'http://www.' + k
+        for k, v in self.domainsToCrawl.attributes.iteritems():
             if re.match(k, response.url):
+                current_domain = k
                 xpath_name = v.xpath_name
                 xpath_price = v.xpath_price
                 xpath_last_price = v.xpath_last_price
@@ -52,9 +73,10 @@ class ProductSpider(SitemapSpider):
                 xpath_sku = v.xpath_sku
                 xpath_category = v.xpath_category
                 xpath_supplier = v.xpath_supplier
+                xpath_brand = v.xpath_brand
                 
                 break
-        
+        return
         # ***** Handle failed request *****
         if response.status == 301:
             # Retry another
@@ -137,7 +159,7 @@ class ProductSpider(SitemapSpider):
         item['sku'] = get_val(response,xpath_sku, True, False)
         # URL
         item['url'] = response.url
-        item['source'] = self.allowed_domains[0]
+        item['source'] = current_domain
         ts = time.time()
         item['update_at'] = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         item['changefreq'] = 'Always'
@@ -285,7 +307,7 @@ def get_sitemap_urls():
 
 
 def get_sitemap_rules():
-    return [('sitemap-products-2', 'parse')]
+    return [('products', 'parse')]
 
 
 def get_sitemap_follows():

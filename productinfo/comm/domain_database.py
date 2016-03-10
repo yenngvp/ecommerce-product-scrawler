@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import MySQLdb as mdb
 from database import Database
 
 
@@ -18,13 +19,13 @@ class DomainDatabase(Database):
         self.cursor = self.conn.cursor(mdb.cursors.DictCursor)
         self.cursor.execute("SELECT * FROM domain")
 
-        rows = cur.fetchall()
+        rows = self.cursor.fetchall()
 
         for row in rows:
-            print row["id"], row["name"]
             dt = DomainAttribute()
-            dt.allowed_domains = eval(row['name'])
-            dt.sitemap_urls = eval(row['sitemap_urls'])
+            dt.name = row['name']
+            dt.url = row['url']
+            dt.sitemap_urls = eval(row['sitemap_robot_urls'])
             dt.sitemap_follow = eval(row['sitemap_follow'])
             dt.sitemap_rules = eval(row['sitemap_rules'])
             # Xpath
@@ -40,8 +41,10 @@ class DomainDatabase(Database):
             dt.xpath_supplier = eval(row['xpath_supplier'])
             dt.xpath_brand = eval(row['xpath_brand'])
             
-            self.attributes[dt.domain] = dt
-        
+            self.attributes[dt.name] = dt
+            print dt
+            
+        print self.attributes
         # Close database connection    
         self.conn.close()
         
@@ -51,7 +54,8 @@ class DomainDatabase(Database):
 class DomainAttribute():
     
     def __init__(self):
-        self.allowed_domains = []
+        self.name = ''
+        self.url = ''
         self.sitemap_urls = []
         self.sitemap_follow = []
         self.sitemap_rules = []
