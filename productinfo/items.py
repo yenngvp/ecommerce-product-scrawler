@@ -8,6 +8,21 @@
 import scrapy
 
 
+class ProductUrlItem(scrapy.Item):
+    type = scrapy.Field()
+    url = scrapy.Field()
+    domain = scrapy.Field()
+    hash_value = scrapy.Field()
+    category = scrapy.Field()
+    subcat1 = scrapy.Field()
+    subcat2 = scrapy.Field()
+    create_at = scrapy.Field()
+    update_at = scrapy.Field()
+    changefreq = scrapy.Field()
+
+    pass
+
+
 class ProductItem(scrapy.Item):
     type = scrapy.Field()
     name = scrapy.Field()
@@ -99,4 +114,7 @@ class UrlFailureItem(scrapy.Item):
     retry = scrapy.Field()
 
     pass
+
+
+
 
