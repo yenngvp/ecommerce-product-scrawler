@@ -35,7 +35,7 @@ class ProductFrontierSpider(scrapy.Spider):
 
         # Iterate over domainsToCrawl dictionary and set attributes to the spider
         for domain in self.domain_metadata:
-#             if domain['name'] == 'lazada.vn':
+            # if domain['name'] == 'lazada.vn':
             if domain['name'] == 'tiki.vn':
                 self.allowed_domains.append(domain['name'])
                 self.start_urls.append(domain['start_urls'])
@@ -61,21 +61,21 @@ class ProductFrontierSpider(scrapy.Spider):
         print self.current_domain
         
         # ***** Handle failed request *****
-        if response.status == 301 or response.status == 302:
-            # Retry another
-            location = response.headers['location']
-            if re.search(self.current_domain['name'], location) is None:
-                location = urljoin(self.current_domain['start_urls'], location)
-            logging.warn('== Received 301 response. Retrying new request with redirected: %s', location)
-            yield scrapy.Request(location, callback=self.parse)
-            return
-
         if response.status != 200:
+            if response.status == 301 or response.status == 302:
+                # Retry another
+                location = response.headers['location']
+                if re.search(self.current_domain['name'], location) is None:
+                    location = urljoin(self.current_domain['start_urls'], location)
+                logging.warn('== Received 301 response. Retrying new request with redirected: %s', location)
+                yield scrapy.Request(location, callback=self.parse)
+
             item = UrlFailureItem()
             item['type'] = 'url_failure'
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
+            item['domain'] = self.current_domain['name']
             yield item
             return
             
@@ -105,7 +105,7 @@ class ProductFrontierSpider(scrapy.Spider):
                  
                 for link in links:
                     logging.debug('Extracting sub-category url %s', link)
-                    #Save category
+                    # Save category
                     item = CategoryItem()
                     item['type'] = 'category'
                     item['code'] = ''
@@ -126,27 +126,27 @@ class ProductFrontierSpider(scrapy.Spider):
                 # Request to get sub-category links
                 yield scrapy.Request(url=link.url, callback=self.parse_subcat)
 
-    
     def parse_subcat(self, response):
         logging.debug('===========Parse sub-category %s', response.url)
-        
-        # ***** Handle failed request *****
-        if response.status == 301 or response.status == 302:
-            # Retry another
-            location = response.headers['location']
-            if re.search(self.current_domain['name'], location) is None:
-                location = urljoin(self.current_domain['start_urls'], location)
-            logging.warn('Received %s response. Retrying new request with redirected: %s', 
-                         str(response.status), location)
-            yield scrapy.Request(location, callback=self.parse_subcat)
-            return
+        ref_url = response.request.headers.get('Referer', None)
 
+        # ***** Handle failed request *****
         if response.status != 200:
+            if response.status == 301 or response.status == 302:
+                # Retry another
+                location = response.headers['location']
+                if re.search(self.current_domain['name'], location) is None:
+                    location = urljoin(self.current_domain['start_urls'], location)
+                logging.warn('Received %s response. Retrying new request with redirected: %s',
+                             str(response.status), location)
+                yield scrapy.Request(location, callback=self.parse_subcat)
+
             item = UrlFailureItem()
             item['type'] = 'url_failure'
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
+            item['domain'] = self.current_domain['name']
             yield item
             return
 
@@ -172,29 +172,30 @@ class ProductFrontierSpider(scrapy.Spider):
                     logging.debug('Requesting %s', link.url)
                     yield req
 
-    
     def parse_product_url(self, response):
         logging.debug('===========Parse product %s', response.url)
-        # ***** Handle failed request *****
-        if response.status == 301 or response.status == 302:
-            # Retry another
-            location = response.headers['location']
-            if re.search(self.current_domain['name'], location) is None:
-                location = urljoin(self.current_domain['start_urls'], location)
-            logging.warn('Received %s response. Retrying new request with redirected: %s', 
-                         str(response.status), location)
-            yield scrapy.Request(location, callback=self.parse_product_url)
-            return
+        ref_url = response.request.headers.get('Referer', None)
 
+        # ***** Handle failed request *****
         if response.status != 200:
+            if response.status == 301 or response.status == 302:
+                # Retry another
+                location = response.headers['location']
+                if re.search(self.current_domain['name'], location) is None:
+                    location = urljoin(self.current_domain['start_urls'], location)
+                logging.warn('Received %s response. Retrying new request with redirected: %s',
+                             str(response.status), location)
+                yield scrapy.Request(location, callback=self.parse_product_url)
+
             item = UrlFailureItem()
             item['type'] = 'url_failure'
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
+            item['domain'] = self.current_domain['name']
             yield item
             return
-        
+
         # Looking for product list box to extract the links
         if response.xpath(self.current_domain['xpath_product_box']):
             links = self.product_link_extractors[self.current_domain['name']].extract_links(response)
@@ -209,7 +210,7 @@ class ProductFrontierSpider(scrapy.Spider):
                 item['domain'] = self.current_domain['name']
                 yield item  
          
-        #Get next page
+        # Get next page
         if response.xpath(self.current_domain['xpath_pagination']):
             links = self.pagination_extractors[self.current_domain['name']].extract_links(response)
   

@@ -108,6 +108,7 @@ class UrlFailureItem(scrapy.Item):
     ref_url = scrapy.Field()
     status = scrapy.Field()
     retry = scrapy.Field()
+    domain = scrapy.Field()
 
     pass
 

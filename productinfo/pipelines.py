@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import hashlib
 import logging
+import time
 from scrapy.conf import settings
 from productinfo.comm import connection
 
@@ -64,9 +65,16 @@ class ProductinfoPipeline(object):
         return item
  
     def process_url_item(self, item):
-        
+
+        hash = hashlib.sha224(item['url']).hexdigest()
+        key = 'request-failure:' + item['domain'] + ':' + hash
+        value = dict(url=item['url'],
+                     ref_url=item['ref_url'],
+                     status=item['url'], id=item['status'])
+        self.r.hmset(key, value)
+
         return item
- 
+
     def process_supplier_item(self, item):
         
         return item
