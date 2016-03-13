@@ -7,7 +7,7 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
 connection_pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=0)
-print 'ConnectionPool ' + connection_pool
+print 'New Connection Pool'
 
 def from_settings(settings):
     url = settings.get('REDIS_URL',  REDIS_URL)

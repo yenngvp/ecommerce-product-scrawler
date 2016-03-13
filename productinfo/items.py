@@ -11,15 +11,10 @@ import scrapy
 class ProductUrlItem(scrapy.Item):
     type = scrapy.Field()
     url = scrapy.Field()
-    domain = scrapy.Field()
-    hash_value = scrapy.Field()
+    id = scrapy.Field()
     category = scrapy.Field()
-    subcat1 = scrapy.Field()
-    subcat2 = scrapy.Field()
-    create_at = scrapy.Field()
-    update_at = scrapy.Field()
-    changefreq = scrapy.Field()
-
+    domain = scrapy.Field()
+    
     pass
 
 
@@ -51,6 +46,7 @@ class CategoryItem(scrapy.Item):
     parent_name = scrapy.Field()
     level = scrapy.Field()
     url = scrapy.Field()
+    domain = scrapy.Field()
 
     pass
 

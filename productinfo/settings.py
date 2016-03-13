@@ -8,7 +8,7 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
-from scrapy.settings.default_settings import SPIDER_MIDDLEWARES, DOWNLOADER_MIDDLEWARES
+#from scrapy.settings.default_settings import SPIDER_MIDDLEWARES, DOWNLOADER_MIDDLEWARES
 
 BOT_NAME = 'productcrawler'
 
@@ -20,12 +20,12 @@ NEWSPIDER_MODULE = 'productinfo.spiders'
 # USER_AGENT = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS=64
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY=0.5
+DOWNLOAD_DELAY=3
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN=1
 # CONCURRENT_REQUESTS_PER_IP=1
@@ -59,17 +59,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.spidermiddleware.urllength.UrlLengthMiddleware': None,
     'productinfo.comm.rotate_useragent.RandomUserAgentMiddleware' :400,
     'productinfo.comm.rotate_useragent.ProxyMiddleware' :400,
-    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerSpiderMiddleware': 1000,
 }
-
-DOWNLOADER_MIDDLEWARES.update({
-    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerDownloaderMiddleware': 1000,
-})
-
-SCHEDULER = 'frontera.contrib.scrapy.schedulers.frontier.FronteraScheduler'
-SPIDER_MIDDLEWARES.update({
-    'frontera.contrib.scrapy.middlewares.seeds.file.FileSeedLoader': 1,
-})
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -86,7 +76,7 @@ ITEM_PIPELINES = {
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
-#AUTOTHROTTLE_ENABLED=True
+AUTOTHROTTLE_ENABLED=True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY=5
 # The maximum download delay to be set in case of high latencies
@@ -131,13 +121,13 @@ HTTP_PROXY_ENABLED = False
 HTTP_PROXY = 'http://127.0.0.1:8123'
 MAX_REQUESTS_PER_IP = 99
 
-DOWNLOAD_TIMEOUT = 15
+DOWNLOAD_TIMEOUT = 30
 
 HTTPERROR_ALLOW_ALL = True
 
 DOWNLOAD_MAXSIZE = 1*1024*1024
 
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 REACTOR_THREADPOOL_MAXSIZE = 32
 DNS_TIMEOUT = 180

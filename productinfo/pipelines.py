@@ -5,13 +5,15 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import hashlib
-from comm import connection
+import logging
+from scrapy.conf import settings
+from productinfo.comm import connection
 
 
 
 class ProductinfoPipeline(object):
     def __init__(self):
-        self.r = connection.from_settings(self.crawler.settings)
+        self.r = connection.from_settings(settings)
 
     def process_item(self, item, spider):
         if item['type'] == 'product':
@@ -32,63 +34,44 @@ class ProductinfoPipeline(object):
             return item
     
     def process_product_url_item(self, item):
-        try:
-            # Insert product item
-            hash = hashlib.sha224(item['url']).hexdigest()
-            key = 'product:' % item['domain'] % ':' % hash 
-            self.r.hmset(key, url=item['url'], domain=item['domain'])
-        except MySQLdb.Error, e:
-            print "Error insert product: %d: %s" % (e.args[0], e.args[1])
+
+        # Insert product item
+        hash = hashlib.sha224(item['url']).hexdigest()
+        key = 'product:' + item['domain'] + ':' + item['url'] 
+        value = dict(url=item['url'], id=item['id'], category=item['category'], domain=item['domain'])
+        self.r.hmset(key, value)
     
         return item
     
-#     def process_product_item(self, item):
-#         try:
-#             # Insert product item
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert product: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
-# 
-#     def process_category_item(self, item):
-#         try:
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert category: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
-# 
-#     def process_product_category_item(self, item):
-#         try:
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert product_category: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
-# 
-#     def process_url_item(self, item):
-#         try:
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert url: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
-# 
-#     def process_supplier_item(self, item):
-#         try:
-# 
-# 
-#         except MySQLdb.Error, e:
-#             print "Error insert supplier: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
-# 
-#     def process_product_supplier_item(self, item):
-#         try:
-# 
-#            
-#         except MySQLdb.Error, e:
-#             print "Error insert product_supplier: %d: %s" % (e.args[0], e.args[1])
-# 
-#         return item
+    def process_product_item(self, item):
+        
+        return item
+
+    def process_category_item(self, item):
+        
+        hash = hashlib.sha224(item['url']).hexdigest()
+        key = 'category:' + item['domain'] + ':' + hash 
+        value = dict(name=item['name'],
+                     parent_name=item['parent_name'], 
+                     url=item['url'], id=item['url'],
+                     level=item['level'])
+        self.r.hmset(key, value)
+        
+        return item
+ 
+    def process_product_category_item(self, item):
+        
+        return item
+ 
+    def process_url_item(self, item):
+        
+        return item
+ 
+    def process_supplier_item(self, item):
+        
+        return item
+ 
+    def process_product_supplier_item(self, item):
+        
+        return item
+
