@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+<<<<<<< HEAD
 from scrapy.conf import settings
 
 #from database import Database
@@ -9,13 +10,28 @@ from productinfo.comm import connection
 class SpiderMetadata():
     
     def __init__(self):
+=======
+import MySQLdb as mdb
+#from database import Database
+from comm import connection
+
+
+class SpiderMetadata(Database):
+    
+    def __init__(self):
+        super(DomainDatabase, self).__init__()
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
         
         # A dictionary of domains attributes
         # ie: {'lazada.vn': lazadaDomainAttr, 'tiki.vn': tikiDomainAttr, ...}
         self.domain_metadata = []
         self.product_metadata = []
         
+<<<<<<< HEAD
         self.r = connection.from_settings(settings)
+=======
+        self.r = connection.from_settings(self.crawler.settings)
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
         
     # Gets domain meta-data to crawl
     def get_domain_metadata(self):
@@ -36,4 +52,44 @@ class SpiderMetadata():
             
         print self.product_metadata
         return self.product_metadata
+<<<<<<< HEAD
 
+=======
+    
+    
+# class DomainMetada():
+#     
+#     def __init__(self):
+#         self.name = ''
+#         self.start_urls = ''
+#         self.xpath_category = {}
+#         self.xpath_subcat1 = {}
+#         self.xpath_subcat2 = {}
+#         self.xpath_product_box = {}
+#         self.xpath_pagination = {}
+#         self.max_item_perpage = {}
+#         self.send_page_first = {}
+#         self.page_append = {}
+#         self.pagination_regex = {}
+#         self.link_extract_type = {}       
+#         self.link_extract_regex = {}
+#         
+# 
+# class product_metadata():
+#     
+#     def __init__(self):
+#         self.name = ''
+#         self.url = ''
+#         self.xpath_name = {}
+#         self.xpath_price = {}
+#         self.xpath_last_price = {}
+#         self.xpath_summary = {}
+#         self.xpath_spec = {}
+#         self.xpath_description = {}
+#         self.xpath_image_url = {}
+#         self.xpath_sku = {}
+#         self.xpath_breadcum = {}
+#         self.xpath_category = {}    
+#         self.xpath_supplier = {}       
+#         self.xpath_brand = {}
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369

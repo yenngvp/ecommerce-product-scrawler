@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import scrapy
+<<<<<<< HEAD
 from scrapy.conf import settings
+=======
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
 import re
 import datetime
 import time
 import logging
 from urlparse import urljoin
+<<<<<<< HEAD
 from scrapy.spiders import Spider
 from productinfo.items import *
 from productinfo.comm.spider_metadata import SpiderMetadata
@@ -14,6 +18,15 @@ from productinfo.comm.dupefilter import RFPDupeFilter
 
 
 class ProductFrontierSpider(scrapy.Spider):
+=======
+from scrapy.spiders import CrawlSpider
+from productinfo.items import *
+from productinfo.comm.spider_metadata import SpiderMetadata
+from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
+
+
+class ProductFrontierSpider(CrawlSpider):
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
     
     name = 'product-frontier'
     
@@ -21,17 +34,22 @@ class ProductFrontierSpider(scrapy.Spider):
     start_urls = []
     
     num_pages_crawled = 0
+<<<<<<< HEAD
     product_link_extractors = {}
     cat_link_extractors = {}
     subcat_link_extractors = {}
     pagination_extractors = {}
     
     current_domain = None
+=======
+    link_extractors = {}
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
     
     def __init__(self, *a, **kw):
         
         self.spider_metadata = SpiderMetadata()
         self.domain_metadata = self.spider_metadata.get_domain_metadata()
+<<<<<<< HEAD
 
         # Iterate over domainsToCrawl dictionary and set attributes to the spider
         for domain in self.domain_metadata:
@@ -43,6 +61,16 @@ class ProductFrontierSpider(scrapy.Spider):
                 self.cat_link_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_category']))
                 self.subcat_link_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_subcat1']))
                 self.pagination_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_pagination']))
+=======
+        
+        # Iterate over domainsToCrawl dictionary and set attributes to the spider
+        for domain in self.domain_metadata:
+            print domain
+            self.allowed_domains.append(domain['name'])
+            self.start_urls.append(domain['start_urls'])
+            le = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_product_box']))
+            link_extractors[domain['name']] = le
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
         
     # Parse homepage
     def parse(self, response):
@@ -56,6 +84,7 @@ class ProductFrontierSpider(scrapy.Spider):
         # ***** Select xpath corresponding with domain url
         for domain in self.domain_metadata:
             if re.match(domain['start_urls'], response.url):
+<<<<<<< HEAD
                 self.current_domain = domain
                 break
         print self.current_domain
@@ -141,6 +170,12 @@ class ProductFrontierSpider(scrapy.Spider):
             yield scrapy.Request(location, callback=self.parse_subcat)
             return
 
+=======
+                current_domain = domain
+                break
+        
+        # ***** Handle failed request *****
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
         if response.status != 200:
             item = UrlFailureItem()
             item['type'] = 'url_failure'
@@ -149,6 +184,7 @@ class ProductFrontierSpider(scrapy.Spider):
             item['status'] = response.status
             yield item
             return
+<<<<<<< HEAD
         
         if response.xpath(self.current_domain['xpath_subcat1']):
             le = self.subcat_link_extractors[self.current_domain['name']]
@@ -220,3 +256,11 @@ class ProductFrontierSpider(scrapy.Spider):
                     yield req
     
 
+=======
+
+        # Looking for product list box to extract the links
+        if response.xpath(current_domain['xpath_product_box']):
+            link_extractors[current_domain['name']].extract_links(response)
+            
+        response.xpath('html/body/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/div')
+>>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
