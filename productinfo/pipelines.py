@@ -13,14 +13,7 @@ from productinfo.comm import connection
 
 class ProductinfoPipeline(object):
     def __init__(self):
-<<<<<<< HEAD
         self.r = connection.from_settings(settings)
-=======
-
-        self.conn = MySQLdb.connect(user='root', passwd='88footbDb#836', db='productinfo', host='103.232.121.204', port=3306,
-                                    charset="utf8", use_unicode=True)
-        self.cursor = self.conn.cursor()
->>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
 
     def process_item(self, item, spider):
         if item['type'] == 'product':

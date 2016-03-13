@@ -112,21 +112,5 @@ class UrlFailureItem(scrapy.Item):
     pass
 
 
-<<<<<<< HEAD
-=======
-class ProductUrlItem(scrapy.Item):
-    type = scrapy.Field()
-    url = scrapy.Field()
-    hash_value = scrapy.Field()
-    category = scrapy.Field()
-    subcat1 = scrapy.Field()
-    subcat2 = scrapy.Field()
-    create_at = scrapy.Field()
-    update_at = scrapy.Field()
-    changefreq = scrapy.Field()
-
-    pass
-
->>>>>>> 8b587cf0bfce08905dd42dcd2e9faf12bc15f369
 
 
