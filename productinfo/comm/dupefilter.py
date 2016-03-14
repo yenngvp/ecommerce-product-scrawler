@@ -13,4 +13,6 @@ class RFPDupeFilter(BaseDupeFilter):
         print 'Request fingerprint: ' + fp
         key = 'duplicate-filter:%s' % int(time.time())
         added = server.sadd(key, fp)
+        if not added:
+            print 'Request is duplicated. Should be filtered!'
         return not added
