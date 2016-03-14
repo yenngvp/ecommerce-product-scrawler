@@ -14,3 +14,17 @@ $HBASE_HOME/bin/hbase-daemon.sh start thrift
 
 # Start Kafka
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
+
+
+################# REDIS GENERATION ########################################3
+links.sort(key=lambda x: x.url, reverse=True)
+keys duplicate-filter:1457926628
+
+== Remove all
+EVAL "return redis.call('del', unpack(redis.call('keys', ARGV[1])))" 0 duplicate*
+EVAL "return redis.call('del', unpack(redis.call('keys', ARGV[1])))" 0 product:*
+EVAL "return redis.call('del', unpack(redis.call('keys', ARGV[1])))" 0 product:tiki.vn:http://*
+
+l=re.findall('(http:\/\/.+)',response.body)
+l=re.findall('(https:\/\/.+)',response.body)
+

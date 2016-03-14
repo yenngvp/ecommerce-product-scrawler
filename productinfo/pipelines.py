@@ -38,7 +38,7 @@ class ProductinfoPipeline(object):
 
         # Insert product item
         hash = hashlib.sha224(item['url']).hexdigest()
-        key = 'product:' + item['domain'] + ':' + item['url'] 
+        key = 'product:' + item['domain'] + ':' + hash 
         value = dict(url=item['url'], id=item['id'], category=item['category'], domain=item['domain'])
         self.r.hmset(key, value)
     
