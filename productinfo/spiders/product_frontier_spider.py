@@ -7,13 +7,16 @@ import time
 import logging
 from urlparse import urljoin
 from scrapy.spiders import Spider
+from scrapy.http import Request, XmlResponse
+from scrapy.utils.sitemap import Sitemap, sitemap_urls_from_robots
+from scrapy.utils.gz import gunzip, is_gzipped
 from productinfo.items import *
 from productinfo.comm.spider_metadata import SpiderMetadata
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from productinfo.comm.dupefilter import RFPDupeFilter
 
 
-class ProductFrontierSpider(scrapy.Spider):
+class ProductFrontierSpider(Spider):
 
     name = 'product-frontier'
     
@@ -36,16 +39,13 @@ class ProductFrontierSpider(scrapy.Spider):
         # Iterate over domainsToCrawl dictionary and set attributes to the spider
         for domain in self.domain_metadata:
             if domain['active'] == '1':
-                self.allowed_domains.append(domain['name'])
-#                 seed_urls = eval(domain['start_urls'])
-#                 if type(seed_urls) is str:
-#                     self.start_urls.append(domain['start_urls'])
-#                 elif type(seed_urls) is list:
-#                     for seed in seed_urls:
-#                         self.start_urls.append(seed)
-#                 else:
-#                     self.start_urls = []
-                self.start_urls.append(domain['start_urls'])
+                logging.debug('start_urls: ' + domain['start_urls'])
+                if re.search(',', domain['start_urls']):
+                    seed_urls = eval(domain['start_urls'])
+                    for seed in seed_urls:
+                        self.start_urls.append(seed)
+                else:
+                    self.start_urls.append(domain['start_urls'])
                 
                 self.product_link_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_product_box']))
                 self.cat_link_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_category']))
@@ -92,14 +92,38 @@ class ProductFrontierSpider(scrapy.Spider):
         # Check if there is response from sitemap_index or sitemap requests,
         # If yes then do parse links directly from the sitemap_index or Sitemap files.
         # If there is a sitemap_index request then makes another requests to get Sitemaps
-        if self.current_domain['start_type'] == 'sitemap_index':
-            sitemap_links = self.parse_link_from_sitemap(response)
-            for link in sitemap_links:
-                if self.is_sitemap_follow(link):
-                    yield scrapy.Request(link, callback=self.parse_sitemap)
-            return
-        elif self.current_domain['start_type'] == 'sitemap':
-            self.parse_sitemap(response)
+        if self.current_domain['start_type'] == 'sitemap':
+            
+            if response.url.endswith('/robots.txt'):
+                for url in sitemap_urls_from_robots(response.body):
+                    logging.debug("Found sitemap url: " + url)
+                    if self.is_sitemap_follow(url):
+                        logging.debug("        > Requesting sitemap: " + url)
+                        yield Request(url, callback=self.parse)
+            else:
+                body = self._get_sitemap_body(response)
+                if body is None:
+                    logger.warning("Ignoring invalid sitemap: %(response)s",
+                                   {'response': response}, extra={'spider': self})
+                    return
+    
+                s = Sitemap(body)
+                if s.type == 'sitemapindex':
+                    for loc in iterloc(s):
+                        logging.debug("Found sitemap url: " + loc)
+                        if self.is_sitemap_follow(loc):
+                            logging.debug("        > Requesting sitemap: " + loc)
+                            yield Request(loc, callback=self.parse)
+                elif s.type == 'urlset':
+                    for loc in iterloc(s):
+                        logging.debug('Extracting product url %s' + loc)
+                        item = ProductUrlItem()
+                        item['type'] = 'product_url'
+                        item['url'] = loc
+                        item['id'] = 0
+                        item['category'] = ''
+                        item['domain'] = self.current_domain['name']
+                        yield item  
             return
         else: 
             # self.current_domain['start_type'] == 'common':
@@ -157,7 +181,7 @@ class ProductFrontierSpider(scrapy.Spider):
                     item['level'] = 2
                     item['domain'] = self.current_domain['name']
                     yield item
-                    
+                     
                     # Request products
                     url = link.url
                     req = scrapy.Request(url=url, callback=self.parse_product_url)
@@ -254,7 +278,7 @@ class ProductFrontierSpider(scrapy.Spider):
             links = self.product_link_extractors[self.current_domain['name']].extract_links(response)
  
             for link in links:
-                logging.debug('Extracting product url %s' + link.url)
+                logging.debug('Extracting product url: ' + link.url)
                 item = ProductUrlItem()
                 item['type'] = 'product_url'
                 item['url'] = link.url
@@ -277,32 +301,42 @@ class ProductFrontierSpider(scrapy.Spider):
                 
             for link in links:
                 url = link.url
-                logging.debug('Extracting next page url: %s' + url)
+                logging.debug('Extracting next page url: ' + url)
                 req = scrapy.Request(url=url, callback=self.parse_product_url)
                 if not self.dupfilter.request_seen(req):
                     yield req
-                    
-    def parse_sitemap(self, response):
-        links = self.parse_link_from_sitemap(response)
-        for link in links:
-            logging.debug('Extracting product url %s' + link.url)
-            item = ProductUrlItem()
-            item['type'] = 'product_url'
-            item['url'] = link.url
-            item['id'] = 0
-            item['category'] = ''
-            item['domain'] = self.current_domain['name']
-            yield item  
-        
-    def parse_link_from_sitemap(self, response):
-        if self.current_domain['is_http']:
-            links = re.findall('(http:\/\/.+)', response.body)
-        else:
-            links = re.findall('(https:\/\/.+)', response.body)
-        return links
     
     def is_sitemap_follow(self, url):
         for follow in eval(self.current_domain['sitemap_follow']):
             if re.search(follow, url):
                 return True
         return False
+    
+    def _get_sitemap_body(self, response):
+        """Return the sitemap body contained in the given response,
+        or None if the response is not a sitemap.
+        """
+        if isinstance(response, XmlResponse):
+            return response.body
+        elif is_gzipped(response):
+            return gunzip(response.body)
+        elif response.url.endswith('.xml'):
+            return response.body
+        elif response.url.endswith('.xml.gz'):
+            return gunzip(response.body)
+
+def regex(x):
+    if isinstance(x, six.string_types):
+        return re.compile(x)
+    return x
+ 
+ 
+def iterloc(it, alt=False):
+    for d in it:
+        yield d['loc']
+ 
+        # Also consider alternate URLs (xhtml:link rel="alternate")
+        if alt and 'alternate' in d:
+            for l in d['alternate']:
+                yield l
+    
