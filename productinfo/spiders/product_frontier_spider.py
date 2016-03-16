@@ -29,8 +29,6 @@ class ProductFrontierSpider(Spider):
     subcat_link_extractors = {}
     pagination_extractors = {}
     
-    current_domain = None
-
     def __init__(self, *a, **kw):
                 
         self.spider_metadata = SpiderMetadata()
@@ -64,19 +62,20 @@ class ProductFrontierSpider(Spider):
             logging.info('+++++++++++ Spider %s crawled %s pages', self.name, str(self.num_pages_crawled))
         
         # ***** Select xpath corresponding with domain url
+        current_domain = None
         for domain in self.domain_metadata:
-            if re.match(domain['start_urls'], response.url):
-                self.current_domain = domain
+            if re.match(domain['root_url'], response.url):
+                current_domain = domain
                 break
-        print self.current_domain
+        print current_domain
         
         # ***** Handle failed request *****
         if response.status != 200:
             if response.status == 301 or response.status == 302:
                 # Retry another
                 location = response.headers['location']
-                if re.search(self.current_domain['name'], location) is None:
-                    location = urljoin(self.current_domain['start_urls'], location)
+                if re.search(current_domain['name'], location) is None:
+                    location = urljoin(current_domain['start_urls'], location)
                 logging.warn('== Received 301/302 response. Retrying new request with redirected: %s', location)
                 yield scrapy.Request(location, callback=self.parse)
 
@@ -85,19 +84,19 @@ class ProductFrontierSpider(Spider):
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
-            item['domain'] = self.current_domain['name']
+            item['domain'] = current_domain['name']
             yield item
             return
             
         # Check if there is response from sitemap_index or sitemap requests,
         # If yes then do parse links directly from the sitemap_index or Sitemap files.
         # If there is a sitemap_index request then makes another requests to get Sitemaps
-        if self.current_domain['start_type'] == 'sitemap':
+        if current_domain['start_type'] == 'sitemap':
             
             if response.url.endswith('/robots.txt'):
                 for url in sitemap_urls_from_robots(response.body):
                     logging.debug("Found sitemap url: " + url)
-                    if self.is_sitemap_follow(url):
+                    if self.is_sitemap_follow(current_domain, url):
                         logging.debug("        > Requesting sitemap: " + url)
                         yield Request(url, callback=self.parse)
             else:
@@ -111,7 +110,7 @@ class ProductFrontierSpider(Spider):
                 if s.type == 'sitemapindex':
                     for loc in iterloc(s):
                         logging.debug("Found sitemap url: " + loc)
-                        if self.is_sitemap_follow(loc):
+                        if self.is_sitemap_follow(current_domain, loc):
                             logging.debug("        > Requesting sitemap: " + loc)
                             yield Request(loc, callback=self.parse)
                 elif s.type == 'urlset':
@@ -122,23 +121,23 @@ class ProductFrontierSpider(Spider):
                         item['url'] = loc
                         item['id'] = 0
                         item['category'] = ''
-                        item['domain'] = self.current_domain['name']
+                        item['domain'] = current_domain['name']
                         yield item  
             return
         else: 
-            # self.current_domain['start_type'] == 'common':
+            # current_domain['start_type'] == 'common':
             # Follows below processing
             logging.debug('Parses common requests')
             
         # Parse category
         logging.debug('===========Parse category %s', response.url)
         cat_links = []
-        if response.xpath(self.current_domain['xpath_category']):
-            cat_links = self.cat_link_extractors[self.current_domain['name']].extract_links(response)
+        if response.xpath(current_domain['xpath_category']):
+            cat_links = self.cat_link_extractors[current_domain['name']].extract_links(response)
             
-            if self.current_domain['joinurl'] == '1':
+            if current_domain['joinurl'] == '1':
                 for k,v in enumerate(cat_links):
-                    cat_links[k].url = urljoin(self.current_domain['root_url'], cat_links[k].url)
+                    cat_links[k].url = urljoin(current_domain['root_url'], cat_links[k].url)
                 
             for link in cat_links:
                 logging.debug('Extracting category url %s', link)
@@ -149,25 +148,32 @@ class ProductFrontierSpider(Spider):
                 item['name'] = link.text
                 item['parent_name'] = ''
                 item['level'] = 1
-                item['domain'] = self.current_domain['name']
+                item['domain'] = current_domain['name']
                 yield item
                 
-        if self.current_domain['direct_subcat'] == '1':
+        if current_domain['direct_subcat'] == '1':
             # Parse subcategory
-            for li_num in range(1, int(self.current_domain['category_count']) + 1):
+            for li_num in range(1, int(current_domain['category_count']) + 1):
                 logging.debug('===========Parse sub-category %s', response.url)
-                xpath_subcat = self.current_domain['xpath_subcat1'].format(str(li_num))
+                xpath_subcat = current_domain['xpath_subcat1'].format(str(li_num))
                 logging.debug('         And ... actual xpath is %s', xpath_subcat)
                 le = LxmlLinkExtractor(restrict_xpaths=(xpath_subcat))
                 links = le.extract_links(response)
                 
-                if self.current_domain['joinurl']:
+                if current_domain['joinurl']:
                     for k,v in enumerate(links):
-                        links[k].url = urljoin(self.current_domain['root_url'], links[k].url)
+                        links[k].url = urljoin(current_domain['root_url'], links[k].url)
                     
-                if self.current_domain['max_item_perpage'] != 'nil':
+                if current_domain['max_item_perpage'] != 'nil':
                     for k,v in enumerate(links):
-                        links[k].url = urljoin(links[k].url, self.current_domain['max_item_perpage'])
+                        if current_domain['name'] == 'lazada.vn':
+                            # Remove forward slash chracter at the end if there is
+                            if re.search('/$', links[k].url):
+                                links[k].url = links[k].url + '?' + current_domain['max_item_perpage']
+                            else:
+                                links[k].url = links[k].url + '&' + current_domain['max_item_perpage']
+                        else:
+                            links[k].url = urljoin(links[k].url, current_domain['max_item_perpage'])
                     
                 for link in links:
                     logging.debug('Extracting sub-category url %s', link)
@@ -179,9 +185,9 @@ class ProductFrontierSpider(Spider):
                     item['name'] = link.text
                     item['parent_name'] = ''
                     item['level'] = 2
-                    item['domain'] = self.current_domain['name']
+                    item['domain'] = current_domain['name']
                     yield item
-                     
+                      
                     # Request products
                     url = link.url
                     req = scrapy.Request(url=url, callback=self.parse_product_url)
@@ -197,13 +203,19 @@ class ProductFrontierSpider(Spider):
         logging.debug('===========Parse sub-category %s', response.url)
         ref_url = response.request.headers.get('Referer', None)
 
+        current_domain = None
+        for domain in self.domain_metadata:
+            if re.match(domain['root_url'], response.url):
+                current_domain = domain
+                break
+            
         # ***** Handle failed request *****
         if response.status != 200:
             if response.status == 301 or response.status == 302:
                 # Retry another
                 location = response.headers['location']
-                if re.search(self.current_domain['name'], location) is None:
-                    location = urljoin(self.current_domain['start_urls'], location)
+                if re.search(current_domain['name'], location) is None:
+                    location = urljoin(current_domain['start_urls'], location)
                 logging.warn('Received %s response. Retrying new request with redirected: %s',
                              str(response.status), location)
                 yield scrapy.Request(location, callback=self.parse_subcat)
@@ -213,21 +225,28 @@ class ProductFrontierSpider(Spider):
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
-            item['domain'] = self.current_domain['name']
+            item['domain'] = current_domain['name']
             yield item
             return
 
-        if response.xpath(self.current_domain['xpath_subcat1']):
-            le = self.subcat_link_extractors[self.current_domain['name']]
+        if response.xpath(current_domain['xpath_subcat1']):
+            le = self.subcat_link_extractors[current_domain['name']]
             links = le.extract_links(response)
              
-            if self.current_domain['joinurl']:
+            if current_domain['joinurl']:
                 for k,v in enumerate(links):
-                    links[k].url = urljoin(self.current_domain['root_url'], links[k].url)
+                    links[k].url = urljoin(current_domain['root_url'], links[k].url)
             
-            if self.current_domain['max_item_perpage'] != 'nil':
+            if current_domain['max_item_perpage'] != 'nil':
                 for k,v in enumerate(links):
-                    links[k].url = urljoin(links[k].url, self.current_domain['max_item_perpage'])
+                    if current_domain['name'] == 'lazada.vn':
+                        # Remove forward slash chracter at the end if there is
+                        if re.search('/$', links[k].url):
+                            links[k].url = links[k].url + '?' + current_domain['max_item_perpage']
+                        else:
+                            links[k].url = links[k].url + '&' + current_domain['max_item_perpage']
+                    else:
+                        links[k].url = urljoin(links[k].url, current_domain['max_item_perpage'])
                        
             for link in links:
                 logging.debug('Extracting sub-category url %s', link)
@@ -239,7 +258,7 @@ class ProductFrontierSpider(Spider):
                 item['name'] = link.text
                 item['parent_name'] = ''
                 item['level'] = 2
-                item['domain'] = self.current_domain['name']
+                item['domain'] = current_domain['name']
                 yield item
                 
                 url = link.url
@@ -252,13 +271,19 @@ class ProductFrontierSpider(Spider):
         logging.debug('===========Parse product %s', response.url)
         ref_url = response.request.headers.get('Referer', None)
 
+        current_domain = None
+        for domain in self.domain_metadata:
+            if re.match(domain['root_url'], response.url):
+                current_domain = domain
+                break
+            
         # ***** Handle failed request *****
         if response.status != 200:
             if response.status == 301 or response.status == 302:
                 # Retry another
                 location = response.headers['location']
-                if re.search(self.current_domain['name'], location) is None:
-                    location = urljoin(self.current_domain['start_urls'], location)
+                if re.search(current_domain['name'], location) is None:
+                    location = urljoin(current_domain['start_urls'], location)
                 location = location
                 logging.warn('Received %s response. Retrying new request with redirected: %s',
                              str(response.status), location)
@@ -269,14 +294,14 @@ class ProductFrontierSpider(Spider):
             item['url'] = response.url
             item['ref_url'] = ref_url
             item['status'] = response.status
-            item['domain'] = self.current_domain['name']
+            item['domain'] = current_domain['name']
             yield item
             return
 
         # Looking for product list box to extract the links
-        if response.xpath(self.current_domain['xpath_product_box']):
-            links = self.product_link_extractors[self.current_domain['name']].extract_links(response)
- 
+        if response.xpath(current_domain['xpath_product_box']):
+            links = self.product_link_extractors[current_domain['name']].extract_links(response)
+            
             for link in links:
                 logging.debug('Extracting product url: ' + link.url)
                 item = ProductUrlItem()
@@ -284,30 +309,33 @@ class ProductFrontierSpider(Spider):
                 item['url'] = link.url
                 item['id'] = 0
                 item['category'] = response.url
-                item['domain'] = self.current_domain['name']
+                item['domain'] = current_domain['name']
                 yield item  
-         
+                
+            logging.debug('Actual number of product per page: ' + str(len(links)))
+            
         # Get next page
-        if response.xpath(self.current_domain['xpath_pagination']):
-            links = self.pagination_extractors[self.current_domain['name']].extract_links(response)
+        if response.xpath(current_domain['xpath_pagination']):
+            links = self.pagination_extractors[current_domain['name']].extract_links(response)
             
-            if self.current_domain['joinurl']:
+            if current_domain['joinurl']:
                 for k,v in enumerate(links):
-                    links[k].url = urljoin(self.current_domain['root_url'], links[k].url)
+                    links[k].url = urljoin(current_domain['root_url'], links[k].url)
             
-            if self.current_domain['max_item_perpage'] != 'nil':
+            if current_domain['max_item_perpage'] != 'nil':
                 for k,v in enumerate(links):
-                    links[k].url = urljoin(links[k].url, self.current_domain['max_item_perpage'])
+                    if current_domain['name'] != 'lazada.vn':
+                        links[k].url = urljoin(links[k].url, current_domain['max_item_perpage'])
                 
             for link in links:
                 url = link.url
-                logging.debug('Extracting next page url: ' + url)
+                logging.debug('Request next page url: ' + url)
                 req = scrapy.Request(url=url, callback=self.parse_product_url)
                 if not self.dupfilter.request_seen(req):
                     yield req
     
-    def is_sitemap_follow(self, url):
-        for follow in eval(self.current_domain['sitemap_follow']):
+    def is_sitemap_follow(self, current_domain, url):
+        for follow in eval(current_domain['sitemap_follow']):
             if re.search(follow, url):
                 return True
         return False
