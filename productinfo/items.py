@@ -29,13 +29,17 @@ class ProductItem(scrapy.Item):
     description = scrapy.Field()
     image_url = scrapy.Field()
     url = scrapy.Field()
+    domain = scrapy.Field()
+    breadcum = scrapy.Field()
+    supplier = scrapy.Field()
+    category = scrapy.Field()
+    brand = scrapy.Field() 
     #Link
-    source = scrapy.Field()
-    url = scrapy.Field()
     create_at = scrapy.Field()
     update_at = scrapy.Field()
-    changefreq = scrapy.Field()
-
+    # status: takes one of QUEUED, UPDATED, NOT_QUEUED
+    status = scrapy.Field()
+    
     pass
 
 

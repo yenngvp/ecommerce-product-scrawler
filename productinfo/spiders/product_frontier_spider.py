@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapy.conf import settings
+from scrapy.settings import Settings
 import re
 import datetime
 import time
@@ -15,6 +15,8 @@ from productinfo.comm.spider_metadata import SpiderMetadata
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from productinfo.comm.dupefilter import RFPDupeFilter
 
+from scrapy import signals
+from scrapy.xlib.pydispatch import dispatcher
 
 class ProductFrontierSpider(Spider):
 
@@ -30,13 +32,16 @@ class ProductFrontierSpider(Spider):
     pagination_extractors = {}
     
     def __init__(self, *a, **kw):
-                
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
+        
         self.spider_metadata = SpiderMetadata()
         self.domain_metadata = self.spider_metadata.get_domain_metadata()
         
         # Iterate over domainsToCrawl dictionary and set attributes to the spider
         for domain in self.domain_metadata:
             if domain['active'] == '1':
+                self.allowed_domains.append(domain['name'])
+                
                 logging.debug('start_urls: ' + domain['start_urls'])
                 if re.search(',', domain['start_urls']):
                     seed_urls = eval(domain['start_urls'])
@@ -51,6 +56,10 @@ class ProductFrontierSpider(Spider):
                 self.pagination_extractors[domain['name']] = LxmlLinkExtractor(restrict_xpaths=(domain['xpath_pagination']))
         
         self.dupfilter = RFPDupeFilter(self.spider_metadata.r)
+        
+    def spider_closed(self, spider):
+        logging.info('Product frontier spider closed. Deactivate domains ...')
+        self.spider_metadata.set_domain_inactive()
         
     # Parse homepage
     def parse(self, response):

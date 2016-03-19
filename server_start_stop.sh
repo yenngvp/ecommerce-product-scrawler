@@ -28,3 +28,6 @@ EVAL "return redis.call('del', unpack(redis.call('keys', ARGV[1])))" 0 product:t
 l=re.findall('(http:\/\/.+)',response.body)
 l=re.findall('(https:\/\/.+)',response.body)
 
+celery -A product_spiders worker -P eventlet -c 10
+celery flower -A product_spiders --broker=redis://localhost:6379// --basic_auth=mongooselabs:mongoose@Prod --address=127.0.0.1 --port=6666
+

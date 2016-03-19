@@ -1,6 +1,6 @@
 import time
 import logging
-from scrapy.conf import settings
+from scrapy.settings import Settings
 from scrapy.dupefilters import BaseDupeFilter
 from scrapy.utils.request import request_fingerprint
 
