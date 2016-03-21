@@ -19,22 +19,28 @@ class ProductSpider(Spider):
     allowed_domains = []
     start_urls = []
     
-    def __init__(self, thread_id=0, *a, **kw):
+    def __init__(self, host_id=0, thread_id=0, val1=-1, val2=-1, *a, **kw):
         dispatcher.connect(self.spider_closed, signals.spider_closed)
         
         self.spider_metadata = SpiderMetadata()
         self.domain_metadata = self.spider_metadata.get_product_metadata()
         
-        # Iterate over domainsToCrawl dictionary and set attributes to the spider
-        for domain in self.domain_metadata:
-            if domain['active'] == '1':
-                self.allowed_domains.append(domain['name'])
-                # Loads start urls for the spider from thread id
-                self.start_urls += self.spider_metadata.load_seed_urls(domain['name'], thread_id) 
-                logging.debug('start_urls: %s' % self.start_urls)
+        host_id = int(host_id)
+        thread_id = int(thread_id)
+        val1 = int(val1)
+        val2 = int(val2)
+        
+        # Loads start urls for the spider from thread id
+        crawl_domains = self.spider_metadata.load_seed_urls(host_id, thread_id, val1, val2)
+        for domain in crawl_domains:
+            self.allowed_domains.append(domain['name'])
+            self.start_urls += domain['seed_urls']
+            logging.debug('Loading urls for domain: %s' % domain['name'])
                                
         self.dupfilter = RFPDupeFilter(self.spider_metadata.r)
-  
+        
+        print 'self.allowed_domains: %s' % self.allowed_domains
+        print 'start_urls count: %s' % len(self.start_urls)
         # Should be post-processed 
         #self.re_noscript = re.compile('<\/*noscript>')
     
@@ -122,7 +128,12 @@ class ProductSpider(Spider):
         # SKU
         item['sku'] = get_val(response,xpath_sku, True, False)
         # Image Url
-        item['image_url'] = get_val(response,xpath_image_url.format(item['sku']), True, False)
+        if current_domain['name'] == 'lazada.vn':
+            sku = re.split('-', item['sku'])
+            actual_xpath_image_url = xpath_image_url.format(sku[0])
+        else:
+            actual_xpath_image_url = xpath_image_url    
+        item['image_url'] = get_val(response,actual_xpath_image_url, True, False)
         # URL
         item['url'] = response.url
         item['domain'] = current_domain['name']

@@ -12,9 +12,15 @@ from productinfo.comm.spider_metadata import SpiderMetadata
 
 app = Celery('product_spiders', backend='redis://localhost', broker='redis://localhost')
 
-@app.task(ignore_result=False, serializer='pickle', compression='zlib')
+@app.task(ignore_result=True, serializer='pickle', compression='zlib')
 def setup_crawler():
-    return SpiderMetadata.assign_urls_to_threads('lazada.vn', 1)
+    settings = get_project_settings()
+    max_threads_per_cluster = settings.get('MAX_NUMBER_OF_THREADS_PER_CLUSTER', 0)
+    max_hosts = settings.get('NUMBER_OF_CLUSTER', 0)
+    
+    for host in range(1, max_hosts + 1):
+        for thread_id in range (1, max_threads_per_cluster + 1):
+            result = SpiderMetadata.assign_urls_to_threads(host, thread_id)
 
 class ProductSpiderScript(Process):
     def __init__(self, spider):
@@ -31,10 +37,8 @@ class ProductSpiderScript(Process):
         reactor.run()
 
 @app.task(ignore_result=False, serializer='pickle', compression='zlib')
-def run_spider():
-    max_threads = 10
-    thread_id = 0
-    spider = ProductSpider(thread_id)
+def run_spider(host_id, thread_id):
+    spider = ProductSpider(host_id, thread_id)
     crawler = ProductSpiderScript(spider)
     crawler.start()
     crawler.join()
