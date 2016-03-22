@@ -58,8 +58,6 @@ class SpiderMetadata():
         
         crawl_domains = []
         for domain in self.product_metadata:
-#             if domain['name'] != 'adayroi.com':
-#                 continue
 #             print domain
             if domain['assigned_cluster'] == str(host_id) and domain['assigned_thread'] == str(thread_id):
                 logging.debug('Loading seeds for domain %s and thread id %s' % (domain, str(thread_id)))
@@ -67,8 +65,8 @@ class SpiderMetadata():
                 match_key = 'product:' + domain['name'] + '*'
                 for key in self.r.scan_iter(match=match_key):
                     product = self.r.hgetall(key)
-#                     if self.r.hexists(key, 'status') and (product['status'] == 'QUEUED' or product['status'] == 'UPDATED'):
-#                         continue
+                    if self.r.hexists(key, 'status') and product['status'] == 'UPDATED':
+                        continue
                     
                     if val1 == -1 or val2 == -1: # Loading all urls from the domain
                         #print product

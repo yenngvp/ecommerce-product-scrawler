@@ -46,14 +46,14 @@ class ProductinfoPipeline(object):
     def process_product_item(self, item):
         
         key = 'product:' + item['domain'] + ':' + get_hash_hexdigest(item['url'])
-        logging.debug('Updating product with key %s' % key)
+        logging.info('Updating product with key %s' % key)
         
         # Make sure we're updating the right product by this key
         # Get value url of the key and then compare with current item url
         stored_url = self.r.hget(key, 'url')
         if stored_url != item['url']:
             # Drop the item
-            raise DropItem("URL saved in the product miss-matched %s" % item)
+            raise DropItem("URL saved in the product miss-matched (%s <> %s)" % (stored_url, item['url']))
             return
         else:
             value = dict(name=item['name'], 

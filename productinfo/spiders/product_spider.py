@@ -103,6 +103,8 @@ class ProductSpider(Spider):
         #  ***** Parse product breadcum *****
         if response.xpath(xpath_breadcum):
             item['breadcum'] = get_val(response, xpath_breadcum, False, False)
+        else:
+            item['breadcum'] = ''
         # Name
         item['name'] = get_val(response,xpath_name)
         product_name = item['name']
