@@ -57,15 +57,15 @@ class ProductSpider(Spider):
             if re.match(domain['root_url'], response.url):
                 current_domain = domain
                 break
-        print current_domain
+        logging.debug('current_domain: %s' % current_domain)
         
         # ***** Handle failed request *****
         if response.status != 200:
             if response.status == 301 or response.status == 302:
                 # Retry another
                 location = response.headers['location']
-                if re.search(current_domain['name'], location) is None:
-                    location = urljoin(current_domain['start_urls'], location)
+                if re.search(current_domain['root_url'], location) is None:
+                    location = urljoin(current_domain['root_url'], location)
                 logging.warn('== Received 301/302 response. Retrying new request with redirected: %s', location)
                 yield scrapy.Request(location, callback=self.parse)
 

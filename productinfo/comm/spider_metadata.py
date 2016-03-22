@@ -58,6 +58,8 @@ class SpiderMetadata():
         
         crawl_domains = []
         for domain in self.product_metadata:
+#             if domain['name'] != 'adayroi.com':
+#                 continue
 #             print domain
             if domain['assigned_cluster'] == str(host_id) and domain['assigned_thread'] == str(thread_id):
                 logging.debug('Loading seeds for domain %s and thread id %s' % (domain, str(thread_id)))
