@@ -72,7 +72,7 @@ class SpiderMetadata():
                         #print product
                         #if (product['status'] == 'nil' or product['status'] == 'NOT_QUEUED') and product['assgined_thread'] == thread_id:
                         seed_urls.append(product['url'])
-                        #self.r.hset(key, 'status', 'QUEUED')
+                        self.r.hset(key, 'status', 'QUEUED')
                         logging.debug('Loading url %s to thread id %s' % (product['url'], str(thread_id)))
                     else: # Only loading url which has number value of its hash url in range of url_hash_from and url_hash_to
                         # Gets hash string from the product url key
