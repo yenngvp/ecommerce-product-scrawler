@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0847d26f-8989-48da-a9ae-17e98e4ed022" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/comm/connection.py" afterPath="$PROJECT_DIR$/productinfo/comm/connection.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/comm/spider_metadata.py" afterPath="$PROJECT_DIR$/productinfo/comm/spider_metadata.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/settings.py" afterPath="$PROJECT_DIR$/productinfo/settings.py" />
     </list>
     <ignored path="productz.iws" />
@@ -38,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spider_metadata.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="spider_metadata.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/productinfo/comm/spider_metadata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.06139154">
-              <caret line="85" column="60" selection-start-line="85" selection-start-column="60" selection-end-line="85" selection-end-column="60" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="94" column="51" selection-start-line="94" selection-start-column="51" selection-end-line="94" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -58,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5088677">
+              <caret line="133" column="19" selection-start-line="133" selection-start-column="19" selection-end-line="133" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -99,9 +96,9 @@
         <option value="$PROJECT_DIR$/productinfo/comm/dupefilter.py" />
         <option value="$PROJECT_DIR$/productinfo/spiders/product_frontier_spider.py" />
         <option value="$PROJECT_DIR$/productinfo/spiders/product_spider.py" />
-        <option value="$PROJECT_DIR$/productinfo/settings.py" />
         <option value="$PROJECT_DIR$/productinfo/comm/connection.py" />
         <option value="$PROJECT_DIR$/productinfo/comm/spider_metadata.py" />
+        <option value="$PROJECT_DIR$/productinfo/settings.py" />
       </list>
     </option>
   </component>
@@ -902,18 +899,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
+    <entry file="file://$PROJECT_DIR$/productinfo/comm/spider_metadata.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <caret line="94" column="51" selection-start-line="94" selection-start-column="51" selection-end-line="94" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/productinfo/comm/spider_metadata.py">
+    <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.06139154">
-          <caret line="85" column="60" selection-start-line="85" selection-start-column="60" selection-end-line="85" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.5088677">
+          <caret line="133" column="19" selection-start-line="133" selection-start-column="19" selection-end-line="133" selection-end-column="19" />
           <folding />
         </state>
       </provider>
