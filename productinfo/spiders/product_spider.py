@@ -19,7 +19,7 @@ class ProductSpider(Spider):
     allowed_domains = []
     start_urls = []
     
-    def __init__(self, host_id=0, thread_id=0, val1=-1, val2=-1, *a, **kw):
+    def __init__(self, host_id=0, thread_id=0, val1=-1, val2=-1, pdomain=None, *a, **kw):
         dispatcher.connect(self.spider_closed, signals.spider_closed)
         
         self.spider_metadata = SpiderMetadata()
@@ -31,7 +31,7 @@ class ProductSpider(Spider):
         val2 = int(val2)
         
         # Loads start urls for the spider from thread id
-        crawl_domains = self.spider_metadata.load_seed_urls(host_id, thread_id, val1, val2)
+        crawl_domains = self.spider_metadata.load_seed_urls(host_id, thread_id, val1, val2, pdomain)
         for domain in crawl_domains:
             self.allowed_domains.append(domain['name'])
             self.start_urls += domain['seed_urls']

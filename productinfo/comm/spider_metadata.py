@@ -52,13 +52,16 @@ class SpiderMetadata():
             logging.debug('Deactivating key %s' % key)
             self.r.hset(key, 'active', '0')
             
-    def load_seed_urls(self, host_id, thread_id, val1, val2):
+    def load_seed_urls(self, host_id, thread_id, val1, val2, pdomain):
         
-        logging.info('load_seed_urls for host %s - thread %s - hash (%s - %s)' % (host_id, thread_id, val1, val2))
+        logging.info('load_seed_urls for domain %s host %s - thread %s - hash (%s - %s)' % (pdomain, host_id, thread_id, val1, val2))
         
         crawl_domains = []
         for domain in self.product_metadata:
 #             print domain
+            if pdomain is not None and pdomain != domain['name']:
+                continue
+            
             if domain['assigned_cluster'] == str(host_id) and domain['assigned_thread'] == str(thread_id):
                 logging.debug('Loading seeds for domain %s and thread id %s' % (domain, str(thread_id)))
                 seed_urls = []
