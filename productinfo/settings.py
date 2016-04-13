@@ -70,7 +70,15 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    'scrapy.pipelines.images.ImagesPipeline': 1,
     'productinfo.pipelines.ProductinfoPipeline': 300,
+}
+
+IMAGES_STORE = '/Users/yennguyen/Data/images' #'/home/mongooselabs/data/images'
+IMAGES_THUMBS = {
+    'small': (50, 50),
+    'medium': (150, 150),
+    'big': (250, 250),
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

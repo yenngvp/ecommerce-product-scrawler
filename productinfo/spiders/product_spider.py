@@ -135,7 +135,7 @@ class ProductSpider(Spider):
             actual_xpath_image_url = xpath_image_url.format(sku[0])
         else:
             actual_xpath_image_url = xpath_image_url    
-        item['image_url'] = get_val(response,actual_xpath_image_url, True, False)
+        item['image_urls'] = get_val(response,actual_xpath_image_url, True, False)
         # URL
         item['url'] = response.url
         item['domain'] = current_domain['name']

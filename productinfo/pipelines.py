@@ -63,7 +63,7 @@ class ProductinfoPipeline(object):
                         spec = item['spec'],
                         description = item['description'],
                         sku = item['sku'],
-                        image_url = item['image_url'],
+                        image_urls = item['image_urls'],
                         breadcum = item['breadcum'],
                         #Link
                         update_at = item['update_at'],
