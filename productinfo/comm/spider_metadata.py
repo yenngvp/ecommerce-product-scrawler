@@ -68,8 +68,8 @@ class SpiderMetadata():
                 match_key = 'product:' + domain['name'] + '*'
                 for key in self.r.scan_iter(match=match_key):
                     product = self.r.hgetall(key)
-                    if self.r.hexists(key, 'status') and product['status'] == 'UPDATED':
-                        continue
+                    #if self.r.hexists(key, 'status') and product['status'] == 'UPDATED':
+                    #    continue
                     
                     if val1 == -1 or val2 == -1: # Loading all urls from the domain
                         #print product
