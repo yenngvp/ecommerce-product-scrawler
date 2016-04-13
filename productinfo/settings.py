@@ -74,7 +74,7 @@ ITEM_PIPELINES = {
     'productinfo.pipelines.ProductinfoPipeline': 300,
 }
 
-IMAGES_STORE = '/Users/yennguyen/Data/images' #'/home/mongooselabs/data/images'
+IMAGES_STORE = '/home/mongooselabs/data/images'
 IMAGES_THUMBS = {
     'small': (50, 50),
     'medium': (150, 150),

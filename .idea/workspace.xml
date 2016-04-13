@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0847d26f-8989-48da-a9ae-17e98e4ed022" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/items.py" afterPath="$PROJECT_DIR$/productinfo/items.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/pipelines.py" afterPath="$PROJECT_DIR$/productinfo/pipelines.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/settings.py" afterPath="$PROJECT_DIR$/productinfo/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/productinfo/spiders/product_spider.py" afterPath="$PROJECT_DIR$/productinfo/spiders/product_spider.py" />
     </list>
     <ignored path="productz.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,13 +24,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="product_spider.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="product_spider.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/productinfo/spiders/product_spider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.6558073">
-              <caret line="137" column="23" selection-start-line="137" selection-start-column="14" selection-end-line="137" selection-end-column="23" />
+            <state vertical-scroll-proportion="-2.7777777">
+              <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
               <folding>
-                <marker date="1460557523000" expanded="false" signature="24:299" placeholder="import ..." />
+                <marker date="1460558398000" expanded="false" signature="24:299" placeholder="import ..." />
               </folding>
             </state>
           </provider>
@@ -53,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/productinfo/comm/spider_metadata.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="82" column="52" selection-start-line="82" selection-start-column="52" selection-end-line="82" selection-end-column="52" />
+              <caret line="85" column="52" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -69,11 +66,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="145" column="38" selection-start-line="145" selection-start-column="38" selection-end-line="145" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.34515688">
+              <caret line="76" column="47" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -484,9 +481,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="40" y="23" width="1400" height="877" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20377085" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20377085" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938075" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938075" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -875,7 +872,7 @@
     <entry file="file://$PROJECT_DIR$/productinfo/comm/spider_metadata.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="52" selection-start-line="82" selection-start-column="52" selection-end-line="82" selection-end-column="52" />
+          <caret line="85" column="52" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="52" />
           <folding />
         </state>
       </provider>
@@ -904,21 +901,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
+    <entry file="file://$PROJECT_DIR$/productinfo/spiders/product_spider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="145" column="38" selection-start-line="145" selection-start-column="38" selection-end-line="145" selection-end-column="38" />
-          <folding />
+        <state vertical-scroll-proportion="-2.7777777">
+          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+          <folding>
+            <marker date="1460558398000" expanded="false" signature="24:299" placeholder="import ..." />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/productinfo/spiders/product_spider.py">
+    <entry file="file://$PROJECT_DIR$/productinfo/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.6558073">
-          <caret line="137" column="23" selection-start-line="137" selection-start-column="14" selection-end-line="137" selection-end-column="23" />
-          <folding>
-            <marker date="1460557523000" expanded="false" signature="24:299" placeholder="import ..." />
-          </folding>
+        <state vertical-scroll-proportion="0.34515688">
+          <caret line="76" column="47" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
