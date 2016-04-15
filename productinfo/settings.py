@@ -152,7 +152,7 @@ MAX_NUMBER_OF_THREADS_PER_CLUSTER = 10
 #
 ###############
 REDIS_URL = None
-REDIS_HOST = '130.211.249.23'
+REDIS_HOST = 'localhost'
 REDIS_PORT = 3679
 REDIS_PASS = '88d041E^redisServer#$'
 
