@@ -4,7 +4,7 @@
 import os
 import random
 from scrapy.conf import settings
-from TorCtl import TorCtl
+# from TorCtl import TorCtl
 import urllib2
 from counter import Counter
 
@@ -22,9 +22,10 @@ class ProxyMiddleware(object):
         
     # Opens a connection to control port and then sends signal to get renew tor identity
     def renew_connection(self):
-        conn = TorCtl.connect(controlAddr="127.0.0.1", controlPort=9051, passphrase="thundertor")
-        conn.send_signal("NEWNYM")
-        conn.close()
+#         conn = TorCtl.connect(controlAddr="127.0.0.1", controlPort=9051, passphrase="thundertor")
+#         conn.send_signal("NEWNYM")
+#         conn.close()
+        pass
 
     def process_request(self, request, spider):
         
