@@ -2,6 +2,7 @@
 ProductZ project
 Goal: Building spiders for crawling products from e-commerce web sites. Then it will be integrated to ProjectGo functionality.
 
+Site crawl setting https://docs.google.com/spreadsheets/d/1LYh4fna4pqTU3dev8Ea9Mh6JVIHBz31b6bZnIShqykI/edit#gid=1661392326
 
 
 redis-cli -p 3679
