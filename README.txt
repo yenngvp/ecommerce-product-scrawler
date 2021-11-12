@@ -1,7 +1,7 @@
 # Author
-Yen Nguyen - mongooselabs@gmail.com
+Yen Nguyen - yen.ngvp@gmail.com
 
-# Project: ProductZ project
+# Project: Ecommerce produts crawling project
 
 # Features
 * Fast
